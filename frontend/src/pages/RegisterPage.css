@@ -27,7 +27,7 @@
     width: 100%;
 }
 
-.title {
+.title-label {
     font-family: 'Poppins', sans-serif;
     font-size: 28px;
     font-weight: 600;
@@ -42,7 +42,6 @@
 }
 
 /*  --- Поле ввода ---    */
-/* - Обёртка для всей группы - */
 .field-wrapper {
     display: flex;
     flex-direction: column;
@@ -51,26 +50,14 @@
     width: 500px;
 }
 
-/* - Название - */
-.field-title {
+.field-label {
     font-family: 'Poppins', sans-serif;
     font-size: 16px;
     font-weight: 400;
     color: #222222;
 }
 
-/* - Обёртка для поля email - */
-.input-email {
-    display: flex;
-    flex-direction: row;
-    gap: 8px;
-    align-items: center;
-    justify-content: flex-start;
-    width: 100%;
-}
-
-/* - Обёртка для поля пароль - */
-.input-password-wrapper {
+.field-input {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -78,16 +65,39 @@
     width: 100%;
 }
 
-/* - Группа для пароля и иконки - */
-.input-password {
+.input-wrapper {
     display: flex;
     flex-direction: row;
     gap: 8px;
     align-items: center;
     justify-content: flex-start;
+    width: 100%;
 }
 
-/*  --- Отключаем нативный глаз ---   */
+.input {
+    border: none;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: #222222;
+    background: transparent;
+    outline: none;
+    flex: 1;
+}
+
+.input::placeholder {
+    color: #777777;
+}
+
+.field-line {
+    width: 100%;
+    height: 0;
+    border-bottom: 1.5px solid #777777;
+    /*
+    margin-top: 0;
+    */
+}
+
 input::-ms-clear, input::-ms-reveal {
     display: none;
 }
@@ -103,35 +113,6 @@ input::-ms-clear, input::-ms-reveal {
     flex-shrink: 0;
 }
 
-/* - Само поле ввода - */
-.field-input {
-    border: none;
-    /*
-    border-bottom: 1.5px solid #777777;
-    padding-bottom: 8px;
-    */
-    font-family: 'Poppins', sans-serif;
-    font-size: 14px;
-    font-weight: 400;
-    color: #222222;
-    background: transparent;
-    outline: none;
-    flex: 1;
-}
-
-.field-input::placeholder {
-    color: #777777;
-}
-
-.field-line {
-    width: 100%;
-    height: 0;
-    border-bottom: 1.5px solid #777777;
-    /*
-    margin-top: 0;
-    */
-}
-
 /*  --- Иконки ---    */
 .icon {
     width: 24px;
@@ -142,9 +123,17 @@ input::-ms-clear, input::-ms-reveal {
 }
 
 /*  --- Кнопка ---    */
-.button {
+.button-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 500px;
+}
+
+.button-register {
     background-color: #3077A6;
-    width: 450px;
+    width: 300px;
     height: 50px;
     border-radius: 50px;
     border: none;
@@ -158,35 +147,27 @@ input::-ms-clear, input::-ms-reveal {
     color: #FFFFFF;
 }
 
-.button:hover {
+.button-register:hover {
     background-color: #2b6a94;
 }
 
-/*  --- Текст о регистрации ---    */
-.register-wrapper {
+.button-back {
+    background-color: #F0F0F0;
+    width: 150px;
+    height: 50px;
+    border-radius: 50px;
+    border: 1.5px solid #777777;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    width: auto;
-}
-
-.register-text {
+    justify-content: center;
+    cursor: pointer;
     font-family: 'Poppins', sans-serif;
-    font-size: 16px;
-    font-weight: 400;
-    color: #222222;
-}
-
-.register-link {
-    font-family: 'Poppins', sans-serif;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 500;
-    color: #0C21C1;
-    text-decoration: none;
-    background: none;
-    border: none;
+    color: #222222;
+    
 }
 
-.register-link:hover {
-    text-decoration: underline;
+.button-back:hover {
+    background-color: #d0d0d0;
 }

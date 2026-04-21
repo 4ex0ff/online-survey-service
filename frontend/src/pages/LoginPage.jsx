@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './LoginPage.css';
 
 function LoginPage() {
+    const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
 
     return (
@@ -60,7 +62,9 @@ function LoginPage() {
                 {/*  --- Текст о регистрации ---   */}
                 <div className="register-wrapper">
                     <div className="register-text">Если у вас нет аккаунта</div>
-                    <a href="#" className="register-link">Вы можете зарегистрироваться здесь!</a>
+                    <button className="register-link" onClick={() => navigate('/register')}>
+                        Вы можете зарегистрироваться здесь!
+                    </button>
                 </div>
             </div>
         </div>
