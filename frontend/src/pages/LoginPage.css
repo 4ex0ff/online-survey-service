@@ -1,33 +1,28 @@
-/*  --- Страница ---    */
-.page {
-    background-color: #BAE7FF;
-    min-height: 100vh;
+/* --- Страница --- */
+.page { 
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-/*  --- Фрейм ---    */
+/* --- Фрейм --- */
 .frame {
-    background-color: #FFFFFF;
     width: 710px;
-    border-radius: 24px;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 32px;
-    padding: 32px;
 }
 
-/*  --- Заголовок ---    */
-.title-wrapper {
+/* --- Заголовок --- */
+.title-group {
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 100%;
 }
 
-.title {
+.title-label {
     font-family: 'Poppins', sans-serif;
     font-size: 28px;
     font-weight: 600;
@@ -41,9 +36,8 @@
     margin-top: 0;
 }
 
-/*  --- Поле ввода ---    */
-/* - Обёртка для всей группы - */
-.field-wrapper {
+/* --- Поле ввода --- */
+.input-group {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -51,26 +45,47 @@
     width: 500px;
 }
 
-/* - Название - */
-.field-title {
+.input-label {
     font-family: 'Poppins', sans-serif;
     font-size: 16px;
     font-weight: 400;
     color: #222222;
 }
 
-/* - Обёртка для поля email - */
-.input-email {
+.input-wrapper {
     display: flex;
     flex-direction: row;
-    gap: 8px;
     align-items: center;
     justify-content: flex-start;
+    gap: 8px;
     width: 100%;
 }
 
-/* - Обёртка для поля пароль - */
-.input-password-wrapper {
+.input-field {
+    border: none;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: #222222;
+    background: transparent;
+    outline: none;
+    width: 100%;
+}
+
+.input::placeholder {
+    color: #777777;
+}
+
+.input-line {
+    width: 100%;
+    height: 0;
+    border-bottom: 1.5px solid #777777;
+    /*
+    margin-top: 0;
+    */
+}
+
+.password-wrapper {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -78,16 +93,6 @@
     width: 100%;
 }
 
-/* - Группа для пароля и иконки - */
-.input-password {
-    display: flex;
-    flex-direction: row;
-    gap: 8px;
-    align-items: center;
-    justify-content: flex-start;
-}
-
-/*  --- Отключаем нативный глаз ---   */
 input::-ms-clear, input::-ms-reveal {
     display: none;
 }
@@ -103,67 +108,14 @@ input::-ms-clear, input::-ms-reveal {
     flex-shrink: 0;
 }
 
-/* - Само поле ввода - */
-.field-input {
-    border: none;
-    /*
-    border-bottom: 1.5px solid #777777;
-    padding-bottom: 8px;
-    */
-    font-family: 'Poppins', sans-serif;
-    font-size: 14px;
-    font-weight: 400;
-    color: #222222;
-    background: transparent;
-    outline: none;
-    flex: 1;
-}
-
-.field-input::placeholder {
-    color: #777777;
-}
-
-.field-line {
-    width: 100%;
-    height: 0;
-    border-bottom: 1.5px solid #777777;
-    /*
-    margin-top: 0;
-    */
-}
-
-/*  --- Иконки ---    */
-.icon {
-    width: 24px;
-    height: 24px;
-    flex-shrink: 0;
-    background-color: #222222;
-    border-radius: 1.5;
-}
-
-/*  --- Кнопка ---    */
-.button {
-    background-color: #3077A6;
+/* --- Кнопки --- */
+.button-primary {
     width: 450px;
     height: 50px;
-    border-radius: 50px;
-    border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-family: 'Poppins', sans-serif;
-    font-size: 18px;
-    font-weight: 500;
-    color: #FFFFFF;
 }
 
-.button:hover {
-    background-color: #2b6a94;
-}
-
-/*  --- Текст о регистрации ---    */
-.register-wrapper {
+/* --- Текст о регистрации --- */
+.register-group {
     display: flex;
     flex-direction: column;
     align-items: center;
