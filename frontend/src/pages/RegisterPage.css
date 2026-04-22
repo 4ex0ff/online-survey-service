@@ -1,13 +1,13 @@
 /* --- Страница --- */
-.page {
+.register-page {
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 /* --- Фрейм --- */
-.frame {
-    width: 710px;
+.register-frame {
+    width: 38%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -15,21 +15,21 @@
 }
 
 /* --- Заголовок --- */
-.title-group {
+.register-title-group {
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 100%;
 }
 
-.title-label {
+.register-title-label {
     font-family: 'Poppins', sans-serif;
     font-size: 28px;
     font-weight: 600;
     color: #222222;
 }
 
-.title-line {
+.register-title-line {
     width: 100%;
     height: 0;
     border-bottom: 2px solid #777777;
@@ -37,22 +37,22 @@
 }
 
 /* --- Поле ввода --- */
-.input-group {
+.register-input-group {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     gap: 8px;
-    width: 500px;
+    width: 80%;
 }
 
-.input-label {
+.register-input-label {
     font-family: 'Poppins', sans-serif;
     font-size: 16px;
     font-weight: 400;
     color: #222222;
 }
 
-.input-wrapper {
+.register-input-wrapper {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -61,7 +61,7 @@
     width: 100%;
 }
 
-.input-field {
+.register-input-field {
     border: none;
     font-family: 'Poppins', sans-serif;
     font-size: 14px;
@@ -72,20 +72,17 @@
     width: 100%;
 }
 
-.input::placeholder {
+.register-input::placeholder {
     color: #777777;
 }
 
-.input-line {
+.register-input-line {
     width: 100%;
     height: 0;
     border-bottom: 1.5px solid #777777;
-    /*
-    margin-top: 0;
-    */
 }
 
-.password-wrapper {
+.register-password-wrapper {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -97,7 +94,7 @@ input::-ms-clear, input::-ms-reveal {
     display: none;
 }
 
-.password-toggle {
+.register-password-toggle {
     background: none;
     border: none;
     cursor: pointer;
@@ -109,20 +106,70 @@ input::-ms-clear, input::-ms-reveal {
 }
 
 /* --- Кнопки --- */
-.button-group {
+.register-button-group {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    width: 500px;
+    width: 80%;
 }
 
-.button-primary {
-    width: 300px;
+.register-button-primary {
+    width: 60%;
     height: 50px;
 }
 
-.button-secondary {
-    width: 150px;
+.register-button-secondary {
+    width: 30%;
     height: 50px;
+}
+
+/* --- Адаптация под телефоны --- */
+@media (max-width: 768px) {
+    /* --- Фрейм --- */
+    .register-frame{
+        width: 90%;
+        max-width: 450px;
+        padding: 24px;
+        gap: 20px;
+    }
+
+    /* --- Заголовок --- */
+    .register-title-label {
+        font-size: 24px;
+    }
+
+    /* --- Поле ввода --- */
+    .register-input-group {
+        width: 100%;
+    }
+
+    .register-input-label {
+        font-size: 16px;
+    }
+
+    .register-input-field {
+        font-size: 16px;
+    }
+
+    /* --- Кнопки --- */
+    .register-button-group {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
+    
+    .register-button-primary {
+        height: auto;
+        padding: 12px;
+        font-size: 16px;
+    }
+
+    .register-button-secondary {
+        height: auto;
+        padding: 12px;
+        font-size: 16px;
+    }
 }
