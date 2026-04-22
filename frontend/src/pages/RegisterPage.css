@@ -136,6 +136,7 @@ input::-ms-clear, input::-ms-reveal {
     .register-page {
         overflow-y: auto;
         height: 100vh;
+        padding-top: 50px;
         padding-bottom: 200px;
     }
 
