@@ -126,6 +126,18 @@ input::-ms-clear, input::-ms-reveal {
 
 /* --- Адаптация под телефоны --- */
 @media (max-width: 768px) {
+    /* --- Страница --- */
+    body {
+        overflow: hidden;
+        position: fixed;
+        width: 100%;
+    }
+
+    .login-page {
+        overflow-y: auto;
+        height: 100vh;
+    }
+
     /* --- Фрейм --- */
     .register-frame{
         width: 90%;
@@ -163,12 +175,12 @@ input::-ms-clear, input::-ms-reveal {
     .register-button-primary {
         height: auto;
         padding: 12px;
-        font-size: 16px;
+        font-size: 14px;
     }
 
     .register-button-secondary {
         height: auto;
         padding: 12px;
-        font-size: 16px;
+        font-size: 14px;
     }
 }
