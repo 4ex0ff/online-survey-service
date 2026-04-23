@@ -9,12 +9,12 @@
 body {
     background-color: #BAE7FF;
     font-family: 'Poppins', sans-serif;
-    min-height: 100vh;
+    min-height: 100dvh;
 }
 
 /* --- Базовый стиль для страницы --- */
 .page {
-    min-height: 100vh;
+    min-height: 100dvh;
 }
 
 /* --- Базовый стиль для фрейма --- */

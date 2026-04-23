@@ -1,5 +1,5 @@
 /* --- Страница --- */
-.login-page { 
+.login-page {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -143,17 +143,8 @@ input::-ms-clear, input::-ms-reveal {
 /* --- Адаптация под телефоны --- */
 @media (max-width: 768px) {
     /* --- Страница --- */
-    body {
-        overflow: hidden;
-        position: fixed;
-        width: 100%;
-    }
-
     .login-page {
-        overflow-y: auto;
-        height: 100vh;
-        padding-top: 50px;
-        padding-bottom: 200px;
+        min-height: 100dvh;
     }
 
     /* --- Фрейм --- */
