@@ -1,4 +1,4 @@
-export { default as IconArrowLeft } from './IconArrowLeft';
+export { default as IconArrowLeft} from './IconArrowLeft';
 export { default as IconArrowRight} from './IconArrowRight';
 export { default as IconChevronDown} from './IconChevronDown';
 export { default as IconChevronLeft} from './IconChevronLeft';
@@ -24,3 +24,4 @@ export { default as IconClipboard} from './IconClipboard';
 export { default as IconSearch} from './IconSearch';
 export { default as IconTrash} from './IconTrash';
 export { default as IconX} from './IconX';
+export { default as IconDoorOpen} from './IconDoorOpen';

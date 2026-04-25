@@ -1,0 +1,322 @@
+/* --- Страница --- */
+.dashboard-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 64px;
+}
+
+/* --- Header --- */
+header {
+    background-color: #FFFFFF;
+    border-bottom-left-radius: 24px;
+    border-bottom-right-radius: 24px;
+    padding: 8px 32px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 85%;
+    height: auto;
+}
+
+.header-logo {
+    cursor: pointer;
+}
+
+.header-button-logout {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+/* --- Управление опросами --- */
+.dashboard-controls {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 75%;
+}
+
+.dashboard-button-create {
+    width: 18%;
+    height: 50px;
+    font-size: 20px;
+}
+
+.dashboard-search-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 8px 24px;
+    gap: 8px;
+    border-radius: 50px;
+    width: 70%;
+    height: 50px;
+}
+
+.dashboard-search-field {
+    border: none;
+    background: transparent;
+    outline: none;
+    width: 100%;
+}
+
+.dashboard-search-field::placeholder {
+    color: #222222;
+}
+
+.dashboard-button-filter {
+    width: 9%;
+    height: 50px;
+}
+
+/* --- Опросы --- */
+.dashboard-surveys-group {
+    width: 75%;
+    flex: 1;
+}
+
+.dashboard-surveys-group.centered {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Загрузка */
+.dashboard-surveys-loading {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+    width: fit-content;
+    height: 50px;
+    border-radius: 50px;
+}
+
+.dashboard-spinner{
+    width: 32px;
+    height: 32px;
+    border: 3px solid #f0f0f0;
+    border-top-color: #3077A6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Ошибка */
+.dashboard-surveys-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    padding: 24px 32px;
+    width: fit-content;
+    height: fit-content;
+}
+
+.dashboard-button-retry {
+    width: 50%;
+    height: 50px;
+    padding: 0 16px;
+    font-size: 20px;
+}
+
+/* Если опросов нет */
+.dashboard-surveys-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    height: 50px;
+}
+
+/* Если опросы есть */
+.dashboard-surveys-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 64px 32px;
+}
+
+.dashboard-survey-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+    padding: 24px;
+    flex: 0 0 calc(25% - 24px);
+    box-sizing: border-box;
+    height: fit-content;
+    overflow: hidden;
+}
+
+@media (max-width: 1399px) {
+    .dashboard-survey-card {
+        flex: 0 0 calc(33.333% - 24px);
+    }
+}
+
+.dashboard-survey-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+}
+
+.dashboard-survey-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dashboard-survey-actions {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.dashboard-survey-info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+}
+
+/* --- Footer --- */
+footer {
+    background-color: #FFFFFF;
+    border-top-left-radius: 24px;
+    border-top-right-radius: 24px;
+    padding: 8px 32px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 85%;
+    height: auto;
+}
+
+/* --- Адаптация под телефоны --- */
+@media (max-width: 768px) {
+    header {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        padding: 8px 16px;
+        width: 100%;
+    }
+
+    /* --- Header --- */
+    .header-logo {
+        
+    }
+
+    .header-button-logout {
+        
+    }
+
+    /* --- Управление опросами --- */
+    .dashboard-controls {
+        width: 90%;
+    }
+
+    .dashboard-button-create {
+        width: 18%;
+        height: 50px;
+        font-size: 16px;
+    }
+
+    .dashboard-search-wrapper {
+        padding: 8px 24px;
+        gap: 8px;
+        border-radius: 50px;
+        width: 70%;
+        height: 50px;
+    }
+
+    .dashboard-button-filter {
+        width: 9%;
+        height: 50px;
+    }
+
+    /* --- Опросы --- */
+    .dashboard-surveys-group {
+        width: 90%;
+        flex: 1;
+    }
+
+    /* Загрузка */
+    .dashboard-surveys-loading {
+        gap: 16px;
+        width: fit-content;
+        height: 50px;
+        border-radius: 50px;
+    }
+
+    .dashboard-spinner{
+        width: 32px;
+        height: 32px;
+    }
+
+    /* Ошибка */
+    .dashboard-surveys-error {
+        gap: 24px;
+        padding: 24px 32px;
+        width: fit-content;
+        height: fit-content;
+    }
+
+    .dashboard-button-retry {
+        width: 50%;
+        height: 50px;
+        padding: 0 16px;
+        font-size: 20px;
+    }
+
+    /* Если опросов нет */
+    .dashboard-surveys-empty {
+        height: 50px;
+    }
+
+    /* Если опросы есть */
+    .dashboard-surveys-grid {
+        gap: 32px;
+    }
+
+    .dashboard-survey-card {
+        flex: 0 0 100%;
+    }
+
+    .dashboard-survey-header {
+        gap: 8px;
+        width: 100%;
+    }
+
+    /* --- Footer --- */
+    footer {
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+        padding: 8px 16px;
+        width: 100%;
+    }
+}

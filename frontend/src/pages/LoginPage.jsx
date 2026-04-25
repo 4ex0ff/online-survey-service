@@ -8,8 +8,7 @@ function LoginPage() {
     const [showPassword, setShowPassword] = useState(false);
 
     const handleLogin = () => {
-        console.log('Попытка входа');
-        alert('Демо-режим: вход выполнен (заглушка)');
+        navigate('/dashboard')
         // Здесь позже будет запрос к бэкенду
     };
 
@@ -27,7 +26,10 @@ function LoginPage() {
                     <div className="login-input-label">Email</div>
                     <div className="login-input-wrapper">
                         <IconMail width={24} height={24}/>
-                        <input className="login-input-field" name='email' type='email' placeholder='Введите ваш email' />
+                        <input className="login-input-field"
+                        name='email'
+                        type='text'
+                        placeholder='Введите ваш email' />
                     </div>
                     <div className="login-input-line"></div>
                 </div>
@@ -38,9 +40,13 @@ function LoginPage() {
                     <div className="login-password-wrapper">
                         <div className="login-input-wrapper">
                             <IconLock width={24} height={24} />
-                            <input className="login-input-field" name='password' type={showPassword ? 'text' : 'password'} placeholder='Введите ваш пароль' />
+                            <input className="login-input-field"
+                            name='password'
+                            type={showPassword ? 'text' : 'password'}
+                            placeholder='Введите ваш пароль' />
                         </div>
-                        <button className="login-password-toggle" type='button' onClick={() => setShowPassword(!showPassword)}>
+                        <button className="login-password-toggle"
+                        onClick={() => setShowPassword(!showPassword)}>
                             {showPassword ?
                             (<IconEyeOff width={24} height={24} />)
                             :
@@ -52,14 +58,16 @@ function LoginPage() {
                 </div>
 
                 {/*  --- Кнопка "Войти" ---   */}
-                <button className="button-primary login-button-primary" type='button' onClick={handleLogin}>
+                <button className="button-primary login-button-primary"
+                onClick={handleLogin}>
                     Войти
                 </button>
 
                 {/*  --- Текст о регистрации ---   */}
                 <div className="login-register-group">
                     <div className="login-register-text">Если у вас нет аккаунта</div>
-                    <button className="login-register-link" onClick={() => navigate('/register')}>
+                    <button className="login-register-link"
+                    onClick={() => navigate('/register')}>
                         Вы можете зарегистрироваться здесь!
                     </button>
                 </div>

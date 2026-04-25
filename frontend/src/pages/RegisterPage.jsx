@@ -9,8 +9,7 @@ function RegisterPage() {
     const [showPassword2, setShowPassword2] = useState(false);
     
     const handleRegister = () => {
-        console.log('Попытка регистрации');
-        alert('Демо-режим: регистрация выполнена (заглушка)');
+        navigate('/dashboard')
         // Здесь позже будет запрос к бэкенду
     };
 
@@ -28,7 +27,10 @@ function RegisterPage() {
                     <div className="register-input-label">Имя пользователя</div>
                     <div className="register-input-wrapper">
                         <IconUser width={24} height={24} />
-                        <input className="register-input-field" name='username' type='username' placeholder='Как к вам обращаться?' />
+                        <input className="register-input-field"
+                        name='username'
+                        type='text'
+                        placeholder='Как к вам обращаться?' />
                     </div>
                     <div className="register-input-line"></div>
                 </div>
@@ -38,7 +40,10 @@ function RegisterPage() {
                     <div className="register-input-label">Email</div>
                     <div className="register-input-wrapper">
                         <IconMail width={24} height={24} />
-                        <input className="register-input-field" name='email' type='email' placeholder='Введите ваш email' />
+                        <input className="register-input-field"
+                        name='email'
+                        type='text'
+                        placeholder='Введите ваш email' />
                     </div>
                     <div className="register-input-line"></div>
                 </div>
@@ -49,9 +54,13 @@ function RegisterPage() {
                     <div className="register-password-wrapper">
                         <div className="register-input-wrapper">
                             <IconLock width={24} height={24} />
-                            <input className="register-input-field" name='password' type={showPassword1 ? 'text' : 'password'} placeholder='Введите ваш пароль' />
+                            <input className="register-input-field"
+                            name='password'
+                            type={showPassword1 ? 'text' : 'password'}
+                            placeholder='Введите ваш пароль' />
                         </div>
-                        <button className="register-password-toggle" type='button' onClick={() => setShowPassword1(!showPassword1)}>
+                        <button className="register-password-toggle"
+                        onClick={() => setShowPassword1(!showPassword1)}>
                             {showPassword1 ?
                             (<IconEyeOff width={24} height={24} />)
                             :
@@ -68,9 +77,13 @@ function RegisterPage() {
                     <div className="register-password-wrapper">
                         <div className="register-input-wrapper">
                             <IconLock width={24} height={24} />
-                            <input className="register-input-field" name="password" type={showPassword2 ? "text" : "password"} placeholder="Подтвердите ваш пароль" />
+                            <input className="register-input-field"
+                            name="confirmPassword"
+                            type={showPassword2 ? "text" : "password"}
+                            placeholder="Подтвердите ваш пароль" />
                         </div>
-                        <button className="register-password-toggle" type='button' onClick={() => setShowPassword2(!showPassword2)}>
+                        <button className="register-password-toggle"
+                        onClick={() => setShowPassword2(!showPassword2)}>
                             {showPassword2 ?
                             (<IconEyeOff width={24} height={24} />)
                             :
@@ -84,11 +97,13 @@ function RegisterPage() {
                 {/* --- Кнопки --- */}
                 <div className="register-button-group">
                     {/*  --- Кнопка "Зарегистрироваться" ---   */}
-                    <button className="button-primary register-button-primary" type='button'onClick={handleRegister}>
+                    <button className="button-primary register-button-primary"
+                    onClick={handleRegister}>
                         Зарегистрироваться
                     </button>
                     {/*  --- Кнопка "Назад" ---   */}
-                    <button className="button-secondary register-button-secondary" type='button' onClick={() => navigate('/login')}>
+                    <button className="button-secondary register-button-secondary"
+                    onClick={() => navigate('/login')}>
                         Назад
                     </button>
                 </div>

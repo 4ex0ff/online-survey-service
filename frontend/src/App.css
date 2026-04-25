@@ -49,7 +49,7 @@ body {
     border: 1.5px solid #777777;
     border-radius: 50px;
     font-family: 'Poppins', sans-serif;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 500;
     color: #222222;
     display: flex;
@@ -61,4 +61,88 @@ body {
 
 .button-secondary:hover {
     background-color: #d0d0d0;
+}
+
+.button-tertiary {
+    background-color: #ffffff;
+    border: none;
+    border-radius: 50px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+    color: #222222;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.button-tertiary:hover {
+    background-color: #F0F0F0;
+}
+
+/* --- Базовые стили для текста --- */
+.h1 {
+    font-size: 28px;
+    font-weight: 600;
+    color: #222222;
+}
+
+.h2 {
+    font-size: 24px;
+    font-weight: 500;
+    color: #222222;
+}
+
+.p1 {
+    font-size: 20px;
+    font-weight: 400;
+    color: #222222;
+}
+
+.p2 {
+    font-size: 16px;
+    font-weight: 400;
+    color: #222222;
+}
+
+.help-text {
+    font-size: 14px;
+    font-weight: 400;
+    color: #777777;
+}
+
+@media (max-width: 768px) {
+        .h1 {
+        font-size: 24px;
+    }
+
+    .h2 {
+        font-size: 20px;
+    }
+
+    .p1 {
+        font-size: 16px;
+    }
+
+    .p2 {
+        font-size: 14px;
+    }
+
+    .help-text {
+        font-size: 12px;
+    }
+
+    .button-primary {
+        font-size: 16px;
+    }
+
+    .button-secondary {
+        font-size: 16px;
+    }
+
+    .button-tertiary {
+        font-size: 16px;
+    }
 }

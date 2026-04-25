@@ -3,6 +3,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    min-height: 100dvh;
 }
 
 /* --- Фрейм --- */
@@ -72,7 +73,7 @@
     width: 100%;
 }
 
-.login-input::placeholder {
+.login-input-field::placeholder {
     color: #777777;
 }
 
@@ -142,11 +143,6 @@ input::-ms-clear, input::-ms-reveal {
 
 /* --- Адаптация под телефоны --- */
 @media (max-width: 768px) {
-    /* --- Страница --- */
-    .login-page {
-        min-height: 100dvh;
-    }
-
     /* --- Фрейм --- */
     .login-frame{
         width: 90%;

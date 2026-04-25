@@ -3,6 +3,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    min-height: 100dvh;
 }
 
 /* --- Фрейм --- */
@@ -72,7 +73,7 @@
     width: 100%;
 }
 
-.register-input::placeholder {
+.register-input-field::placeholder {
     color: #777777;
 }
 
@@ -126,11 +127,6 @@ input::-ms-clear, input::-ms-reveal {
 
 /* --- Адаптация под телефоны --- */
 @media (max-width: 768px) {
-    /* --- Страница --- */
-    .register-page {
-        min-height: 100dvh;
-    }
-
     /* --- Фрейм --- */
     .register-frame{
         width: 90%;
