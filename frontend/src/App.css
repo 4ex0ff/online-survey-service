@@ -1,62 +1,158 @@
-/* --- Сброс стилей --- */
+﻿/* --- Глобальный сброс --- */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* --- Базовый стиль для body --- */
+html,
 body {
-    background-color: #BAE7FF;
-    font-family: 'Poppins', sans-serif;
     min-height: 100dvh;
 }
 
-/* --- Базовый стиль для страницы --- */
+body {
+    background-color: #BAE7FF;
+    color: #222222;
+    font-family: 'Poppins', sans-serif;
+    line-height: 1.5;
+    text-rendering: optimizeLegibility;
+}
+
+button,
+input,
+textarea,
+a {
+    font: inherit;
+    color: inherit;
+}
+
+button {
+    cursor: pointer;
+    border: none;
+    background: none;
+}
+
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+input,
+textarea {
+    outline: none;
+}
+
+img,
+svg {
+    display: block;
+    max-width: 100%;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+:focus-visible {
+    outline: 2px solid #3077A6;
+    outline-offset: 3px;
+}
+
+/* --- Глобальные переменные --- */
+:root {
+    --color-bg: #BAE7FF;
+    --color-surface: #FFFFFF;
+    --color-text: #222222;
+    --color-muted: #777777;
+    --color-primary: #3077A6;
+    --color-primary-hover: #255e82;
+    --color-secondary: #F0F0F0;
+    --color-secondary-border: #777777;
+    --color-element: #777777;
+
+    --font-size-h1: 28px;
+    --font-size-h2: 24px;
+    --font-size-body: 20px;
+    --font-size-small: 16px;
+    --font-size-helper: 14px;
+    --font-size-button: 18px;
+
+    --font-weight-bold: 600;
+    --font-weight-medium: 500;
+    --font-weight-regular: 400;
+
+    --radius-frame: 24px;
+    --radius-button: 50px;
+
+    --icon-color: #222222;
+    --icon-stroke-width: 1.5;
+}
+
+/* --- Страница --- */
 .page {
     min-height: 100dvh;
 }
 
-/* --- Базовый стиль для фрейма --- */
+/* --- Фрейм --- */
 .frame {
-    background-color: #FFFFFF;
-    border-radius: 24px;
+    background-color: var(--color-surface);
+    border-radius: var(--radius-frame);
     padding: 32px;
 }
 
-/* --- Базовые стили для кнопок --- */
-.button-primary {
-    background-color: #3077A6;
-    border: none;
-    border-radius: 50px;
-    font-family: 'Poppins', sans-serif;
-    font-size: 18px;
-    font-weight: 500;
-    color: #FFFFFF;
+/* --- Заголовок и футер сайта --- */
+.site-header,
+.site-footer {
+    background-color: #FFFFFF;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 32px;
+    width: 85%;
+}
+
+.site-header {
+    border-bottom-left-radius: var(--radius-frame);
+    border-bottom-right-radius: var(--radius-frame);
+}
+
+.site-footer {
+    border-top-left-radius: var(--radius-frame);
+    border-top-right-radius: var(--radius-frame);
+}
+
+/* --- Кнопки --- */
+.button-primary,
+.button-secondary,
+.button-tertiary {
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    transition: background-color 0.2s;
+    border-radius: var(--radius-button);
+    transition: background-color 0.2s ease;
+    font-size: var(--font-size-button);
+}
+
+.button-primary {
+    background-color: var(--color-primary);
+    color: #ffffff;
+    padding: 0 24px;
+    min-height: 50px;
+    font-weight: var(--font-weight-medium);
 }
 
 .button-primary:hover {
-    background-color: #255e82;
+    background-color: var(--color-primary-hover);
 }
 
 .button-secondary {
-    background-color: #F0F0F0;
-    border: 1.5px solid #777777;
-    border-radius: 50px;
-    font-family: 'Poppins', sans-serif;
-    font-size: 18px;
-    font-weight: 500;
+    background-color: var(--color-secondary);
+    border: 1.5px solid var(--color-secondary-border);
     color: #222222;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: background-color 0.2s;
+    padding: 0 24px;
+    min-height: 50px;
+    font-weight: var(--font-weight-medium);
 }
 
 .button-secondary:hover {
@@ -65,84 +161,91 @@ body {
 
 .button-tertiary {
     background-color: #ffffff;
-    border: none;
-    border-radius: 50px;
-    font-family: 'Poppins', sans-serif;
-    font-size: 18px;
-    font-weight: 500;
     color: #222222;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: background-color 0.2s;
+    min-height: 50px;
+    font-weight: var(--font-weight-medium);
 }
 
 .button-tertiary:hover {
     background-color: #F0F0F0;
 }
 
-/* --- Базовые стили для текста --- */
-.h1 {
-    font-size: 28px;
-    font-weight: 600;
-    color: #222222;
+/* --- Иконки --- */
+.icon-primary {
+    width: clamp(24px, 3vw, 32px);
+    height: clamp(24px, 3vw, 32px);
 }
 
-.h2 {
-    font-size: 24px;
-    font-weight: 500;
-    color: #222222;
+.icon-secondary {
+    width: clamp(18px, 2.25vw, 24px);
+    height: clamp(18px, 2.25vw, 24px);
 }
 
-.p1 {
-    font-size: 20px;
-    font-weight: 400;
-    color: #222222;
+/* --- Текстовые стили --- */
+.text-h1 {
+    font-size: var(--font-size-h1);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text);
 }
 
-.p2 {
-    font-size: 16px;
-    font-weight: 400;
-    color: #222222;
+.text-h2 {
+    font-size: var(--font-size-h2);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text);
 }
 
-.help-text {
-    font-size: 14px;
-    font-weight: 400;
-    color: #777777;
+.text-body {
+    font-size: var(--font-size-body);
+    font-weight: var(--font-weight-regular);
+    color: var(--color-text);
 }
 
+.text-small {
+    font-size: var(--font-size-small);
+    font-weight: var(--font-weight-regular);
+    color: var(--color-text);
+}
+
+.text-helper {
+    font-size: var(--font-size-helper);
+    font-weight: var(--font-weight-regular);
+    color: var(--color-muted);
+}
+
+/* --- Адаптивность --- */
 @media (max-width: 768px) {
-        .h1 {
-        font-size: 24px;
+    :root {
+        --font-size-h1: 24px;
+        --font-size-h2: 20px;
+        --font-size-body: 16px;
+        --font-size-small: 14px;
+        --font-size-helper: 12px;
     }
 
-    .h2 {
-        font-size: 20px;
+    .frame {
+        padding: 24px;
     }
 
-    .p1 {
-        font-size: 16px;
+    .site-header {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        padding: 8px 16px;
+        width: 100%;
     }
 
-    .p2 {
-        font-size: 14px;
+    .site-footer {
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 8px 16px;
+        width: 100%;
     }
 
-    .help-text {
-        font-size: 12px;
-    }
-
-    .button-primary {
-        font-size: 16px;
-    }
-
-    .button-secondary {
-        font-size: 16px;
-    }
-
+    .button-primary,
+    .button-secondary,
     .button-tertiary {
+        min-height: 40px;
         font-size: 16px;
     }
 }

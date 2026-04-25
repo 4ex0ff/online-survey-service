@@ -25,3 +25,4 @@ export { default as IconSearch} from './IconSearch';
 export { default as IconTrash} from './IconTrash';
 export { default as IconX} from './IconX';
 export { default as IconDoorOpen} from './IconDoorOpen';
+export { default as IconReload} from './IconReload';

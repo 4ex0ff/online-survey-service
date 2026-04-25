@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+﻿import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './DashboardPage.css';
-import { IconClipboard, IconUserCircle, IconSearch, IconFilter, IconMoreVertical, IconDoorOpen } from '../components/icons';
+import { IconClipboard, IconUserCircle, IconSearch, IconFilter, IconMoreVertical, IconDoorOpen, IconX, IconReload } from '../components/icons';
 
 function DashboardPage() {
+    {/* --- Состояния компонента --- */}
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -11,22 +12,14 @@ function DashboardPage() {
     const [filter, setFilter] = useState('all');
     const [searchQuery, setSearchQuery] = useState('');
 
-    {/* --- Получение опросов --- */}
+    {/* Загрузка данных с сервера */}
+    {/* Временная заглушка с тестовыми данными и имитацией задержки */}
     useEffect(() => {
         const fetchSurveys = async () => {
             try {
                 setLoading(true);
                 setError('');
-                
-                // TODO: заменить на реальный API-запрос
-                // const response = await fetch('/api/surveys');
-                // const data = await response.json();
-                // setSurveys(data);
-                
-                // Заглушка для демонстрации
                 await new Promise(resolve => setTimeout(resolve, 1000));
-                {/*
-                */}
                 const testSurveys = [
                     { id: 1, title: 'Опрос про котиков', status: 'closed', responses: 23, createdAt: '01.04.2025' },
                     { id: 2, title: 'Как вам наш сервис?', status: 'draft', responses: 0, createdAt: '12.04.2025' },
@@ -42,11 +35,10 @@ function DashboardPage() {
                 setLoading(false);
             }
         };
-        
         fetchSurveys();
     }, []);
 
-    {/* --- Фильтрация по статусу --- */}
+    {/* Фильтрация и поиск по опросам */}
     const filteredByStatus = surveys.filter(survey => {
         if (filter === 'published') return survey.status === 'published';
         if (filter === 'draft') return survey.status === 'draft';
@@ -54,112 +46,90 @@ function DashboardPage() {
         return true;
     });
 
-    {/* --- Поиск --- */}
     const filteredByTitle = filteredByStatus.filter(survey =>
         survey.title.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
+    {/* Обработчики действий пользователя */}
     const handleLogout = () => {
-        navigate('/login')
+        navigate('/login');
     };
 
     const handleCreateSurvey = () => {
-        console.log('Попытка создания опроса');
         alert('WIP: скоро здесь будет конструктор опросов');
     };
 
-    const handleEditSurvey = (id) => {
-        console.log('Попытка редактирования опроса');
-        alert('WIP: скоро здесь будет конструктор опросов');
-    };
-
-    const handleViewStats = (id) => {
-        console.log('Попытка просмотра статистики');
-        alert('WIP: скоро здесь будет страница статистики');
-    };
-
-    const handleDeleteSurvey = (id) => {
-        console.log('Попытка удаления опроса');
-        alert('WIP')
-    };
-
+    {/* --- Разметка страницы --- */}
     return(
         <div className='page dashboard-page'>
-            {/* --- Header --- */}
-            <header>
+            <header className='site-header'>
                 <div className='header-logo' onClick={() => navigate('/')}>
-                    <IconClipboard width={32} height={32} />
+                    <IconClipboard className='icon-primary' />
                 </div>
-                <div className='h1'>Сервис опросов</div>
-                <button className='header-button-logout'
-                onClick={handleLogout}>
-                    <IconDoorOpen width={32} height={32} />
+                <label className='text-h1'>Сервис опросов</label>
+                <button type='button' className='header-button-logout' onClick={handleLogout}>
+                    <IconDoorOpen className='icon-primary' />
                 </button>
             </header>
 
-            {/* --- Управление опросами --- */}
             <div className='dashboard-controls'>
-                <button className='button-primary dashboard-button-create'
-                onClick={handleCreateSurvey}>
-                    + Создать
+                <button type='button' className='button-primary dashboard-button-create' onClick={handleCreateSurvey}>
+                    <span className='dashboard-create-full'>+Создать</span>
+                    <span className='dashboard-create-short'>+</span>
                 </button>
                 <div className='frame dashboard-search-wrapper'>
-                    <IconSearch width={32} height={32} />
-                    <input className='p1 dashboard-search-field'
-                    type='text'
-                    placeholder='Поиск'
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)} />
+                    <IconSearch className='icon-primary' />
+                    <input
+                        className='text-body dashboard-search-field'
+                        type='text'
+                        placeholder='Поиск'
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                    />
                 </div>
-                <button className='button-tertiary dashboard-button-filter'
-                onClick={() => {alert('WIP')}}>
-                    <IconFilter width={32} height={32} />
+                <button type='button' className='button-tertiary dashboard-button-filter' onClick={() => alert('WIP')}>
+                    <IconFilter className='icon-primary' />
                 </button>
             </div>
 
-            {/* --- Опросы --- */}
             <div className={`dashboard-surveys-group ${loading || error || (filteredByTitle.length === 0) ? 'centered' : ''}`}>
                 {loading ? (
                     <div className='frame dashboard-surveys-loading'>
                         <div className='dashboard-spinner'></div>
-                        <div className='h2'>Загрузка...</div>
+                        <p className='text-h2'>Загрузка...</p>
                     </div>
                 ) : error ? (
-                    <div className="frame dashboard-surveys-error">
-                        <div className='h2'>{error}</div>
-                        <button className="button-primary dashboard-button-retry"
-                        onClick={() => window.location.reload()}>
-                            Повторить
+                    <div className='frame dashboard-surveys-error'>
+                        <p className='text-h2'>{error}</p>
+                        <button type='button' className='button-primary dashboard-button-retry' onClick={() => window.location.reload()}>
+                            <IconReload className='icon-primary' color='#FFFFFF' />
+                            <span>Повторить</span>
                         </button>
                     </div>
-                ) : (filteredByTitle.length) === 0 ? (
+                ) : filteredByTitle.length === 0 ? (
                     <div className='frame dashboard-surveys-empty'>
-                        {surveys.length === 0 ? (
-                            <div className='h2'>У вас пока нет опросов</div>
-                        ) : (
-                            <div className='h2'>Не найдено соответствующих опросов</div>
-                        )}
+                        <p className='text-h2'>
+                            {surveys.length === 0 ? 'У вас пока нет опросов' : 'Не найдено соответствующих опросов'}
+                        </p>
                     </div>
                 ) : (
                     <div className='dashboard-surveys-grid'>
                         {filteredByTitle.map(survey => (
-                            <div className='frame dashboard-survey-card'
-                            key={survey.id}>
+                            <div className='frame dashboard-survey-card' key={survey.id}>
                                 <div className='dashboard-survey-header'>
-                                    <div className='h2 dashboard-survey-title'>{survey.title}</div>
-                                    <button className='dashboard-survey-actions'
-                                    onClick={() => {alert('WIP')}}>
-                                        <IconMoreVertical width={24} height={24} />
+                                    <h2 className='text-h2 dashboard-survey-title'>{survey.title}</h2>
+                                    <button type='button' className='dashboard-survey-actions' onClick={() => alert('WIP')}>
+                                        <IconMoreVertical className='icon-secondary' />
                                     </button>
                                 </div>
-                                <div className='p2 ${survey.status}'>
+                                <span className={`text-small survey-status--${survey.status}`}>
                                     {survey.status === 'published' ? 'Опубликован'
-                                    : (survey.status === 'draft') ? 'Черновик'
-                                    : 'Закрыт'}
-                                </div>
+                                        : survey.status === 'draft' ? 'Черновик'
+                                        : 'Закрыт'}
+                                </span>
                                 <div className='dashboard-survey-info'>
-                                    <div className='p2'>Ответов: {survey.responses}</div>
-                                    <div className='p2'>{survey.createdAt}</div>
+                                    <p className='text-small'>Ответов: {survey.responses}</p>
+                                    <p className='text-small'>{survey.createdAt}</p>
                                 </div>
                             </div>
                         ))}
@@ -167,10 +137,9 @@ function DashboardPage() {
                 )}
             </div>
 
-            {/* --- Footer --- */}
-            <footer>
-                <div className='help-text'>© 2025 SurveyService. Все права защищены.</div>
-                <div className='help-text'>Сделано с любовью командой №10 🩷</div>
+            <footer className='site-footer'>
+                <p className='text-helper'>© 2026 Сервис опросов. Все права защищены.</p>
+                <p className='text-helper'>Сделано с любовью командой №10 🩷</p>
             </footer>
         </div>
     );
