@@ -117,14 +117,13 @@ a {
 /* --- Заголовок и футер сайта --- */
 .site-header,
 .site-footer {
-    width: min(85%, 1600px);
-    margin: 0 auto;
     background-color: #FFFFFF;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
     padding: 8px 32px;
+    width: 85%;
 }
 
 .site-header {
@@ -225,12 +224,6 @@ a {
     font-size: var(--font-size-helper);
     font-weight: var(--font-weight-regular);
     color: var(--color-muted);
-}
-
-.error {
-    color: #d32f2f; /* Красный для ошибок */
-    font-size: var(--font-size-helper);
-    margin-top: 4px;
 }
 
 /* --- Адаптивность --- */

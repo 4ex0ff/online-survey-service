@@ -63,11 +63,11 @@ function DashboardPage() {
     return(
         <div className='page dashboard-page'>
             <header className='site-header'>
-                <button className='header-logo' type='button' onClick={() => navigate('/')}>
+                <div className='header-logo' onClick={() => navigate('/')}>
                     <IconClipboard className='icon-primary' />
-                </button>
+                </div>
                 <label className='text-h1'>Сервис опросов</label>
-                <button className='header-button-logout' type='button' onClick={handleLogout}>
+                <button type='button' className='header-button-logout' onClick={handleLogout}>
                     <IconDoorOpen className='icon-primary' />
                 </button>
             </header>
@@ -78,7 +78,7 @@ function DashboardPage() {
                     <span className='dashboard-create-short'>+</span>
                 </button>
                 <div className='frame dashboard-search-wrapper'>
-                    <IconSearch className='icon-secondary' />
+                    <IconSearch className='icon-primary' />
                     <input
                         className='text-body dashboard-search-field'
                         type='text'
@@ -88,7 +88,7 @@ function DashboardPage() {
                     />
                 </div>
                 <button type='button' className='button-tertiary dashboard-button-filter' onClick={() => alert('WIP')}>
-                    <IconFilter className='icon-secondary' />
+                    <IconFilter className='icon-primary' />
                 </button>
             </div>
 
@@ -101,7 +101,7 @@ function DashboardPage() {
                 ) : error ? (
                     <div className='frame dashboard-surveys-error'>
                         <p className='text-h2'>{error}</p>
-                        <button type='button' className='button-primary dashboard-button-retry' onClick={fetchSurveys}>
+                        <button type='button' className='button-primary dashboard-button-retry' onClick={() => window.location.reload()}>
                             <IconReload className='icon-primary' color='#FFFFFF' />
                             <span>Повторить</span>
                         </button>
