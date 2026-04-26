@@ -6,8 +6,8 @@ import { IconUser, IconMail, IconLock, IconEye, IconEyeOff } from '../components
 function RegisterPage() {
     {/* --- Состояния компонента --- */}
     const navigate = useNavigate();
-    const [showPassword1, setShowPassword1] = useState(false);
-    const [showPassword2, setShowPassword2] = useState(false);
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+    const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
 
     {/* --- Обработчики действий пользователя --- */}
     const handleRegister = () => {
@@ -66,16 +66,16 @@ function RegisterPage() {
                                 className="text-helper register-input-field"
                                 id="password"
                                 name="password"
-                                type={showPassword1 ? 'text' : 'password'}
+                                type={isPasswordVisible ? 'text' : 'password'}
                                 placeholder="Введите ваш пароль"
                             />
                         </div>
                         <button
                             type="button"
                             className="register-password-toggle"
-                            onClick={() => setShowPassword1(!showPassword1)}
+                            onClick={() => setIsPasswordVisible(!isPasswordVisible)}
                         >
-                            {showPassword1 ? <IconEyeOff className='icon-secondary' /> : <IconEye className='icon-secondary' />}
+                            {isPasswordVisible ? <IconEyeOff className='icon-secondary' /> : <IconEye className='icon-secondary' />}
                         </button>
                     </div>
                     <div className="register-input-line" />
@@ -91,16 +91,16 @@ function RegisterPage() {
                                 className="text-helper register-input-field"
                                 id="confirmPassword"
                                 name="confirmPassword"
-                                type={showPassword2 ? 'text' : 'password'}
+                                type={isConfirmPasswordVisible ? 'text' : 'password'}
                                 placeholder="Подтвердите ваш пароль"
                             />
                         </div>
                         <button
                             type="button"
                             className="register-password-toggle"
-                            onClick={() => setShowPassword2(!showPassword2)}
+                            onClick={() => setIsConfirmPasswordVisible(!isConfirmPasswordVisible)}
                         >
-                            {showPassword2 ? <IconEyeOff className='icon-secondary' /> : <IconEye className='icon-secondary' />}
+                            {isConfirmPasswordVisible ? <IconEyeOff className='icon-secondary' /> : <IconEye className='icon-secondary' />}
                         </button>
                     </div>
                     <div className="register-input-line" />
