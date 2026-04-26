@@ -100,20 +100,6 @@ a {
     padding: 32px;
 }
 
-.error-tooltip {
-    background-color: #ffb3b3;
-    color: #d32f2f;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: var(--font-size-helper);
-    position: absolute;
-    top: 100%;
-    left: 0;
-    transform: translateY(4px);
-    white-space: nowrap;
-    z-index: 10;
-}
-
 /* --- Заголовок и футер сайта --- */
 .site-header,
 .site-footer {
