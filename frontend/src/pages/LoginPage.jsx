@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+﻿import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './LoginPage.css';
 import { IconMail, IconLock, IconEye, IconEyeOff } from '../components/icons';
@@ -6,17 +6,83 @@ import { IconMail, IconLock, IconEye, IconEyeOff } from '../components/icons';
 function LoginPage() {
     {/* --- Состояния компонента --- */}
     const navigate = useNavigate();
-    const [showPassword, setShowPassword] = useState(false);
+    const [formData, setFormData] = useState({
+        email: '',
+        password: '',
+    });
+    const [loading, setLoading] = useState(false);
+    const [errors, setErrors] = useState({});
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
     {/* --- Обработчики действий пользователя --- */}
-    const handleLogin = () => {
-        navigate('/dashboard');
-    };
+    const validateForm = useCallback(() => {
+        const newErrors = {};
+
+        if (!formData.email) {
+            newErrors.email = 'Email обязателен';
+        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+            newErrors.email = 'Неверный формат email';
+        }
+
+        if (!formData.password) {
+            newErrors.password = 'Пароль обязателен';
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    }, [formData]);
+
+    const handleInputChange = useCallback(
+        (event) => {
+            const { name, value } = event.target;
+            setFormData((prev) => ({ ...prev, [name]: value }));
+
+            if (errors[name]) {
+                setErrors((prev) => ({ ...prev, [name]: '' }));
+            }
+            if (errors.general) {
+                setErrors((prev) => ({ ...prev, general: '' }));
+            }
+        },
+        [errors]
+    );
+
+    const handleSubmit = useCallback(
+        async (event) => {
+            event.preventDefault();
+            if (!validateForm()) return;
+
+            setLoading(true);
+            setErrors({});
+
+            try {
+                // Заглушка для API (заменить на реальный запрос при готовности бэкенда)
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData),
+                });
+
+                if (!response.ok) {
+                    throw new Error('Ошибка авторизации');
+                }
+
+                const data = await response.json();
+                localStorage.setItem('token', data.token);
+                navigate('/dashboard');
+            } catch (error) {
+                setErrors({ general: error.message || 'Не удалось выполнить вход' });
+            } finally {
+                setLoading(false);
+            }
+        },
+        [formData, navigate, validateForm]
+    );
 
     {/* --- Разметка страницы --- */}
     return (
         <div className="page login-page">
-            <div className="frame login-frame">
+            <form className="frame login-frame" onSubmit={handleSubmit}>
                 {/* --- Заголовок --- */}
                 <div className="login-title-group">
                     <h1 className="text-h1">Авторизация</h1>
@@ -25,48 +91,64 @@ function LoginPage() {
 
                 {/* --- Email --- */}
                 <div className="login-input-group">
-                    <label htmlFor="email" className="login-input-label text-small">Email</label>
+                    <label htmlFor="email" className="login-input-label text-small">
+                        Email
+                    </label>
                     <div className="login-input-wrapper">
-                        <IconMail className='icon-secondary' />
+                        <IconMail className="icon-secondary" />
                         <input
                             className="text-helper login-input-field"
                             id="email"
                             name="email"
                             type="email"
-                            placeholder="Введите ваш email"
+                            placeholder="email@example.com"
+                            value={formData.email}
+                            onChange={handleInputChange}
                         />
                     </div>
                     <div className="login-input-line" />
+                    {errors.email && <p className="text-helper error">{errors.email}</p>}
                 </div>
 
                 {/* --- Пароль --- */}
                 <div className="login-input-group">
-                    <label htmlFor="password" className="login-input-label text-small">Пароль</label>
+                    <label htmlFor="password" className="login-input-label text-small">
+                        Пароль
+                    </label>
                     <div className="login-password-wrapper">
                         <div className="login-input-wrapper">
-                            <IconLock className='icon-secondary' />
+                            <IconLock className="icon-secondary" />
                             <input
                                 className="text-helper login-input-field"
                                 id="password"
                                 name="password"
-                                type={showPassword ? 'text' : 'password'}
+                                type={isPasswordVisible ? 'text' : 'password'}
                                 placeholder="Введите ваш пароль"
+                                value={formData.password}
+                                onChange={handleInputChange}
                             />
                         </div>
                         <button
                             type="button"
                             className="login-password-toggle"
-                            onClick={() => setShowPassword(prev => !prev)}
+                            onClick={() => setIsPasswordVisible((prev) => !prev)}
                         >
-                            {showPassword ? <IconEyeOff className='icon-secondary' /> : <IconEye className='icon-secondary' />}
+                            {isPasswordVisible ? (
+                                <IconEyeOff className="icon-secondary" />
+                            ) : (
+                                <IconEye className="icon-secondary" />
+                            )}
                         </button>
                     </div>
                     <div className="login-input-line" />
+                    {errors.password && <p className="text-helper error">{errors.password}</p>}
                 </div>
 
+                {errors.general && <p className="text-helper error">{errors.general}</p>}
+
                 {/* --- Кнопка входа --- */}
-                <button type="button" className="button-primary login-button-primary" onClick={handleLogin}>
-                    Войти
+                <button type="submit" className="button-primary login-button-primary" disabled={loading}>
+                    {loading ? 'Вход...' : 'Войти'}
                 </button>
 
                 {/* --- Ссылка на регистрацию --- */}
@@ -76,7 +158,7 @@ function LoginPage() {
                         Вы можете зарегистрироваться здесь!
                     </button>
                 </div>
-            </div>
+            </form>
         </div>
     );
 }
