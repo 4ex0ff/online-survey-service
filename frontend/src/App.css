@@ -69,6 +69,8 @@ a {
     --color-secondary: #F0F0F0;
     --color-secondary-border: #777777;
     --color-element: #777777;
+    --color-error: #d32f2f;
+    --color-error-bg: #ffebee;
 
     --font-size-h1: 28px;
     --font-size-h2: 24px;
@@ -76,6 +78,7 @@ a {
     --font-size-small: 16px;
     --font-size-helper: 14px;
     --font-size-button: 18px;
+    --font-size-error: 12px;
 
     --font-weight-bold: 600;
     --font-weight-medium: 500;
@@ -212,6 +215,19 @@ a {
     color: var(--color-muted);
 }
 
+/* --- Ошибки --- */
+.error-frame {
+    position: absolute;
+    background-color: var(--color-error-bg);
+    border: 1px solid var(--color-error);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    color: var(--color-error);
+    font-size: var(--font-size-error);
+    padding: 4px 8px;
+    width: max-content;
+}
+
 /* --- Адаптивность --- */
 @media (max-width: 768px) {
     :root {
@@ -220,6 +236,8 @@ a {
         --font-size-body: 16px;
         --font-size-small: 14px;
         --font-size-helper: 12px;
+        --font-size-button: 16px;
+        --font-size-error: 10px;
     }
 
     .frame {
@@ -246,6 +264,5 @@ a {
     .button-secondary,
     .button-tertiary {
         min-height: 40px;
-        font-size: 16px;
     }
 }

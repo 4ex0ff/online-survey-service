@@ -32,10 +32,38 @@
 
 /* --- Поле ввода --- */
 .login-input-group {
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 8px;
     width: 100%;
+}
+
+.login-input-group .error-frame {
+    top: 95%;
+    left: 5%;
+    white-space: nowrap;
+    z-index: 2;
+}
+
+.login-input-group .error-frame::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 10px;
+  border-width: 6px;
+  border-style: solid;
+  border-color: transparent transparent var(--color-error) transparent;
+}
+
+.login-input-group .error-frame::after {
+  content: '';
+  position: absolute;
+  bottom: calc(100% - 1.5px);
+  left: 10px;
+  border-width: 6px;
+  border-style: solid;
+  border-color: transparent transparent var(--color-error-bg) transparent;
 }
 
 .login-input-wrapper {
@@ -46,6 +74,7 @@
 }
 
 .login-input-field {
+    color: var(--color-text);
     border: none;
     background: transparent;
     outline: none;
@@ -85,7 +114,25 @@ input::-ms-reveal {
     flex-shrink: 0;
 }
 
-/* --- Кнопки --- */
+/* --- Группа отправки данных --- */
+.login-submit-group {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 32px;
+    gap: 16px;
+    width: 100%;
+}
+
+.login-submit-group .error-frame {
+    top: -75%;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    z-index: 2;
+}
+
 .login-button-primary {
     width: 65%;
     height: 50px;
