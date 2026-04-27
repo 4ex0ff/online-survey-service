@@ -8,7 +8,7 @@
 
 /* --- Фрейм --- */
 .register-frame {
-    width: 40%;
+    width: 38%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -32,10 +32,38 @@
 
 /* --- Поле ввода --- */
 .register-input-group {
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 8px;
     width: 100%;
+}
+
+.register-input-group .error-frame {
+    top: calc(100% - 4.5px);
+    left: 4%;
+    white-space: nowrap;
+    z-index: 2;
+}
+
+.register-input-group .error-frame::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 10px;
+  border-width: 6px;
+  border-style: solid;
+  border-color: transparent transparent var(--color-error) transparent;
+}
+
+.register-input-group .error-frame::after {
+  content: '';
+  position: absolute;
+  bottom: calc(100% - 1.5px);
+  left: 10px;
+  border-width: 6px;
+  border-style: solid;
+  border-color: transparent transparent var(--color-error-bg) transparent;
 }
 
 .register-input-wrapper {
@@ -46,6 +74,7 @@
 }
 
 .register-input-field {
+    color: var(--color-text);
     border: none;
     background: transparent;
     outline: none;
@@ -86,12 +115,22 @@ input::-ms-reveal {
 }
 
 /* --- Кнопки --- */
-.register-button-group {
+.register-submit-group {
+    position: relative;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+    margin-top: 32px;
     width: 80%;
+}
+
+.register-submit-group .error-frame {
+    bottom: calc(100% + 16px);
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    z-index: 2;
 }
 
 .register-button-primary {
@@ -116,13 +155,17 @@ input::-ms-reveal {
         gap: 4px;
     }
 
-    .register-button-group {
+    .register-submit-group {
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
         width: 100%;
         gap: 16px;
+    }
+
+    .register-submit-group .error-frame {
+        bottom: calc(100% + 12px);
     }
     
     .register-button-primary,

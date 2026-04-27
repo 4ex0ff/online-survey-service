@@ -23,6 +23,8 @@ function LoginPage() {
 
         if (!formData.password) {
             newErrors.password = 'Пароль обязателен';
+        } else if (formData.password.length < 8) {
+            newErrors.password = 'Пароль должен содержать не менее 8 символов';
         }
 
         setErrors(newErrors);
@@ -63,7 +65,7 @@ function LoginPage() {
                 });
 
                 if (!response.ok) {
-                    let errorMessage = 'Ошибка авторизации';
+                    let errorMessage = 'Не удалось выполнить вход';
                     try {
                         const errorData = await response.json();
                         errorMessage = errorData.message || errorMessage;
@@ -98,7 +100,7 @@ function LoginPage() {
                 {/* --- Email --- */}
                 <div className="login-input-group">
                     <label htmlFor="email" className="login-input-label text-small">
-                        Email
+                        Email <span className="required-star">*</span>
                     </label>
                     <div className="login-input-wrapper">
                         <IconMail className="icon-secondary" />
@@ -115,13 +117,17 @@ function LoginPage() {
                         />
                     </div>
                     <div className="login-input-line" />
-                    {errors.email && <p id="email-error" className="text-helper error-frame">{errors.email}</p>}
+                    {errors.email &&
+                        <p id="email-error" className="text-helper error-frame">
+                            {errors.email}
+                        </p>
+                    }
                 </div>
 
                 {/* --- Пароль --- */}
                 <div className="login-input-group">
                     <label htmlFor="password" className="login-input-label text-small">
-                        Пароль
+                        Пароль <span className="required-star">*</span>
                     </label>
                     <div className="login-password-wrapper">
                         <div className="login-input-wrapper">
@@ -151,16 +157,20 @@ function LoginPage() {
                         </button>
                     </div>
                     <div className="login-input-line" />
-                    {errors.password && <p id="password-error" className="text-helper error-frame">{errors.password}</p>}
+                    {errors.password &&
+                        <p id="password-error" className="text-helper error-frame">
+                            {errors.password}
+                        </p>
+                    }
                 </div>
 
                 <div className="login-submit-group">
                     {/* --- Общая ошибка --- */}
-                    {errors.general && (
+                    {errors.general &&
                         <div className="error-frame" role="alert">
                             {errors.general}
                         </div>
-                    )}
+                    }
 
                     {/* --- Кнопка входа --- */}
                     <button type="submit" className="button-primary login-button-primary" disabled={loading}>

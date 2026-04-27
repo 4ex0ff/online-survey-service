@@ -8,7 +8,7 @@
 
 /* --- Фрейм --- */
 .login-frame {
-    width: 40%;
+    width: 38%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -40,8 +40,8 @@
 }
 
 .login-input-group .error-frame {
-    top: 95%;
-    left: 5%;
+    top: calc(100% - 4.5px);
+    left: 4%;
     white-space: nowrap;
     z-index: 2;
 }
@@ -121,12 +121,11 @@ input::-ms-reveal {
     flex-direction: column;
     align-items: center;
     margin-top: 32px;
-    gap: 16px;
     width: 100%;
 }
 
 .login-submit-group .error-frame {
-    top: -75%;
+    bottom: calc(100% + 16px);
     left: 50%;
     transform: translateX(-50%);
     white-space: nowrap;
@@ -166,6 +165,10 @@ input::-ms-reveal {
 
     .login-input-group {
         gap: 4px;
+    }
+
+    .login-submit-group .error-frame {
+        bottom: calc(100% + 12px);
     }
 
     .login-button-primary {

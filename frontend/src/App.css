@@ -215,6 +215,11 @@ a {
     color: var(--color-muted);
 }
 
+.required-star {
+    color: #d32f2f;
+    font-weight: bold;
+}
+
 /* --- Ошибки --- */
 .error-frame {
     position: absolute;
