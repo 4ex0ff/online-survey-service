@@ -1,4 +1,4 @@
-﻿import { useEffect, useState, useCallback, useMemo } from 'react';
+﻿import { useEffect, useState, useCallback, useMemo, use } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './DashboardPage.css';
 import Header from '../components/layout/Header';
@@ -28,7 +28,7 @@ function DashboardPage() {
     {/* --- Загрузка опросов --- */}
     const fetchSurveys = useCallback(async () => {
         const token = localStorage.getItem('token');
-        
+
         if (!token) {
             navigate('/login');
             return;
@@ -37,7 +37,7 @@ function DashboardPage() {
         setLoading(true);
         setError('');
         try {
-            const response = await fetch('/surveys', {
+            const response = await fetch('/api/surveys', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
@@ -49,7 +49,14 @@ function DashboardPage() {
             }
 
             if (!response.ok) {
-                throw new Error(`Ошибка ${response.status}: ${response.statusText}`);
+                let errorMessage = `Ошибка ${response.status}`;
+                try {
+                    const errorData = await response.json();
+                    errorMessage = errorData.message || errorData.error || errorMessage;
+                } catch {
+                    // Если не удалось распарсить JSON, оставляем стандартное сообщение
+                }
+                throw new Error(errorMessage);
             }
 
             const data = await response.json(); // массив объектов
@@ -97,11 +104,24 @@ function DashboardPage() {
     }, [surveys, filter, debouncedQuery]);
 
     {/* --- Обработчики действий пользователя --- */}
-    const handleLogout = () => {
+    const handleLogout = useCallback(async () => {
+        const token = localStorage.getItem('token');
+
+        if (token) {
+            try {
+                await fetch('/api/auth/logout', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+            } catch (err) {
+                console.error('Logout error:', err);
+            }
+        }
+
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         navigate('/login');
-    };
+    }, [navigate]);
 
     const handleCreateSurvey = () => {
         alert('Страница создания опросов в разработке');

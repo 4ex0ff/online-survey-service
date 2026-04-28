@@ -64,13 +64,13 @@ function RegisterPage() {
         setErrors({});
 
         try {
-            const response = await fetch('/api/register', {
+            const response = await fetch('/api/auth/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    email: formData.email,
-                    password: formData.password,
-                    username: formData.username
+                    name: formData.username,
+                    Email: formData.email,  //
+                    password: formData.password
                 }),
             });
 
