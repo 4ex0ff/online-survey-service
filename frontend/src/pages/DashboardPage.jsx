@@ -1,5 +1,6 @@
 ﻿import { useEffect, useState, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from "../providers/useAuth";
 import './DashboardPage.css';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
@@ -8,6 +9,7 @@ import { IconSearch, IconFilter, IconMoreVertical, IconReload } from '../compone
 function DashboardPage() {
     {/* --- Состояния компонента --- */}
     const navigate = useNavigate();
+    const { token, signOut } = useAuth();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [surveys, setSurveys] = useState([]);
@@ -27,8 +29,6 @@ function DashboardPage() {
     
     {/* --- Загрузка опросов --- */}
     const fetchSurveys = useCallback(async () => {
-        const token = localStorage.getItem('token');
-
         if (!token) {
             navigate('/login');
             return;
@@ -42,8 +42,7 @@ function DashboardPage() {
             });
 
             if (response.status === 401) {
-                localStorage.removeItem('token');
-                localStorage.removeItem('user');
+                signOut();
                 navigate('/login');
                 return;
             }
@@ -105,21 +104,7 @@ function DashboardPage() {
 
     {/* --- Обработчики действий пользователя --- */}
     const handleLogout = useCallback(async () => {
-        const token = localStorage.getItem('token');
-
-        if (token) {
-            try {
-                await fetch('/api/auth/logout', {
-                    method: 'POST',
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-            } catch (err) {
-                console.error('Logout error:', err);
-            }
-        }
-
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
+        signOut();
         navigate('/login');
     }, [navigate]);
 

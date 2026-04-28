@@ -1,11 +1,13 @@
 ﻿import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from "../providers/useAuth";
 import './LoginPage.css';
 import { IconMail, IconLock, IconEye, IconEyeOff } from '../components/icons';
 
 function LoginPage() {
     {/* --- Состояния компонента --- */}
     const navigate = useNavigate();
+    const { signIn } = useAuth();
     const [formData, setFormData] = useState({ email: '', password: '' });
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
@@ -78,9 +80,7 @@ function LoginPage() {
                     throw new Error(errorMessage);
                 }
 
-                const data = await response.json();
-                localStorage.setItem('token', data.token);
-                localStorage.setItem('user', JSON.stringify(data.user));
+                signIn({ token: response.token, user: response.user });
                 navigate('/dashboard');
             } catch (error) {
                 setErrors({ general: error.message || 'Не удалось выполнить вход' });
