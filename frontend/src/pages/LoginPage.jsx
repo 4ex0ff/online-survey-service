@@ -77,6 +77,7 @@ function LoginPage() {
 
                 const data = await response.json();
                 localStorage.setItem('token', data.token);
+                localStorage.setItem('user', JSON.stringify(data.user));
                 navigate('/dashboard');
             } catch (error) {
                 setErrors({ general: error.message || 'Не удалось выполнить вход' });
