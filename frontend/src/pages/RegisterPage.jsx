@@ -69,7 +69,7 @@ function RegisterPage() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     name: formData.username,
-                    Email: formData.email,  ///
+                    email: formData.email,
                     password: formData.password
                 }),
             });
@@ -86,8 +86,7 @@ function RegisterPage() {
             }
 
             const data = await response.json();
-            localStorage.setItem('token', data.token);
-            navigate('/dashboard');
+            navigate('/login', { state: { message: 'Регистрация прошла успешно! Войдите в аккаунт.' } });
         }catch (error) {
             setErrors({ general: error.message || 'Не удалось зарегистрироваться' });
         } finally {
