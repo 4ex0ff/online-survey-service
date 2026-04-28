@@ -1,4 +1,4 @@
-﻿import { useEffect, useState, useCallback, useMemo, use } from 'react';
+﻿import { useEffect, useState, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './DashboardPage.css';
 import Header from '../components/layout/Header';
@@ -59,7 +59,7 @@ function DashboardPage() {
                 throw new Error(errorMessage);
             }
 
-            const data = await response.json(); // массив объектов
+            const data = await response.json(); // Массив объектов
             const formatted = data.map(survey => ({
                 id: survey.surveyID,
                 title: survey.title,
