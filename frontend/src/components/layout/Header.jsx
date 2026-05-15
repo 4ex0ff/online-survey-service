@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { IconClipboard, IconDoorOpen } from "../icons";
 
 function Header({ title = "Сервис опросов", onLogout }) {
-  // Общая шапка dashboard: логотип возвращает в кабинет, кнопка выхода сбрасывает сессию.
   const navigate = useNavigate();
 
   return (

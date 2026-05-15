@@ -3,7 +3,9 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { useAuth } from "./providers/useAuth";
 import DashboardPage from "./pages/DashboardPage";
 import LoginPage from "./pages/LoginPage";
+import PublicSurveyPage from "./pages/PublicSurveyPage";
 import RegisterPage from "./pages/RegisterPage";
+import SurveyBuilderPage from "./pages/SurveyBuilderPage";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import PublicOnlyRoute from "./routes/PublicOnlyRoute";
 
@@ -43,6 +45,15 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/surveys/:surveyID/edit"
+          element={
+            <ProtectedRoute>
+              <SurveyBuilderPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/s/:surveyID" element={<PublicSurveyPage />} />
       </Routes>
     </BrowserRouter>
   );

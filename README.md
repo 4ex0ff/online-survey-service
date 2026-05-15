@@ -52,6 +52,12 @@ MVP веб-сервиса для создания и прохождения оп
 - `POST /api/auth/register`
 - `POST /api/auth/login`
 - `GET /api/surveys`
+- `POST /api/surveys`
+- `GET /api/surveys/{surveyID}`
+- `PUT /api/surveys/{surveyID}`
+- `POST /api/surveys/{surveyID}/publish`
+- `GET /api/surveys/public/{surveyID}`
+- `POST /api/surveys/public/{surveyID}/responses`
 - `GET /api/health`
 
 ## Переменные окружения

@@ -13,6 +13,8 @@
 
 ### Phase 2. Survey Builder
 
+Status: implemented in `main` as authenticated survey create/edit/publish flow.
+
 - Создание опроса
 - Редактирование названия и описания
 - Добавление вопросов:
@@ -22,6 +24,8 @@
 - Черновик и публикация
 
 ### Phase 3. Public Response Flow
+
+Status: partially implemented in `main` as public survey link, anonymous completion, and answer storage.
 
 - Публичная ссылка на опрос
 - Проверка доступности по статусу и датам

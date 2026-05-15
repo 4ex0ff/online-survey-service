@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { ApiError } from "../api/client";
-import { getSurveys } from "../api/surveys";
+import { createSurvey, getSurveys } from "../api/surveys";
 import Footer from "../components/layout/Footer";
 import Header from "../components/layout/Header";
 import { IconFilter, IconMoreVertical, IconReload, IconSearch } from "../components/icons";
@@ -16,10 +16,10 @@ const STATUS_LABELS = {
 };
 
 function DashboardPage() {
-  // Dashboard использует внешний layout, но загружает реальные summaries опросов из защищённого API.
   const navigate = useNavigate();
   const { token, signOut } = useAuth();
   const [loading, setLoading] = useState(true);
+  const [creating, setCreating] = useState(false);
   const [error, setError] = useState("");
   const [surveys, setSurveys] = useState([]);
   const [filter, setFilter] = useState("all");
@@ -31,10 +31,30 @@ function DashboardPage() {
     navigate("/login", { replace: true });
   }, [navigate, signOut]);
 
+  const loadSurveys = useCallback(async () => {
+    if (!token) {
+      handleUnauthorized();
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError("");
+      setSurveys(await getSurveys(token));
+    } catch (requestError) {
+      if (requestError instanceof ApiError && requestError.status === 401) {
+        handleUnauthorized();
+        return;
+      }
+      setError("Не удалось загрузить опросы");
+    } finally {
+      setLoading(false);
+    }
+  }, [handleUnauthorized, token]);
+
   useEffect(() => {
     let active = true;
 
-    // Загружаем опросы после того, как protected route подтвердил наличие token.
     if (!token) {
       handleUnauthorized();
       return undefined;
@@ -43,7 +63,6 @@ function DashboardPage() {
     const loadInitialSurveys = async () => {
       try {
         const response = await getSurveys(token);
-
         if (active) {
           setSurveys(response);
         }
@@ -51,12 +70,10 @@ function DashboardPage() {
         if (!active) {
           return;
         }
-
         if (requestError instanceof ApiError && requestError.status === 401) {
           handleUnauthorized();
           return;
         }
-
         setError("Не удалось загрузить опросы");
       } finally {
         if (active) {
@@ -72,29 +89,6 @@ function DashboardPage() {
     };
   }, [handleUnauthorized, token]);
 
-  const handleRetry = useCallback(async () => {
-    if (!token) {
-      handleUnauthorized();
-      return;
-    }
-
-    try {
-      setLoading(true);
-      setError("");
-      const response = await getSurveys(token);
-      setSurveys(response);
-    } catch (requestError) {
-      if (requestError instanceof ApiError && requestError.status === 401) {
-        handleUnauthorized();
-        return;
-      }
-
-      setError("Не удалось загрузить опросы");
-    } finally {
-      setLoading(false);
-    }
-  }, [handleUnauthorized, token]);
-
   useEffect(() => {
     const timer = window.setTimeout(() => {
       setDebouncedQuery(searchQuery);
@@ -104,7 +98,6 @@ function DashboardPage() {
   }, [searchQuery]);
 
   const filteredSurveys = useMemo(() => {
-    // Поиск и фильтр статуса пока клиентские, потому что размер списка в MVP небольшой.
     const query = debouncedQuery.trim().toLowerCase();
 
     return surveys
@@ -117,6 +110,28 @@ function DashboardPage() {
     navigate("/login", { replace: true });
   };
 
+  const handleCreate = async () => {
+    if (!token) {
+      handleUnauthorized();
+      return;
+    }
+
+    try {
+      setCreating(true);
+      setError("");
+      const survey = await createSurvey(token, { title: "Новый опрос", description: "" });
+      navigate(`/surveys/${survey.surveyID}/edit`);
+    } catch (requestError) {
+      if (requestError instanceof ApiError && requestError.status === 401) {
+        handleUnauthorized();
+        return;
+      }
+      setError("Не удалось создать опрос");
+    } finally {
+      setCreating(false);
+    }
+  };
+
   const handleFilterClick = () => {
     const nextFilter = filter === "all" ? "published" : filter === "published" ? "draft" : "all";
     setFilter(nextFilter);
@@ -127,8 +142,8 @@ function DashboardPage() {
       <Header onLogout={handleLogout} />
 
       <div className="dashboard-controls">
-        <button type="button" className="button-primary dashboard-button-create" disabled title="Конструктор появится позже">
-          <span className="dashboard-create-full">+Создать</span>
+        <button type="button" className="button-primary dashboard-button-create" onClick={handleCreate} disabled={creating}>
+          <span className="dashboard-create-full">{creating ? "Создание..." : "+Создать"}</span>
           <span className="dashboard-create-short">+</span>
         </button>
         <div className="frame dashboard-search-wrapper">
@@ -160,7 +175,7 @@ function DashboardPage() {
         ) : error ? (
           <div className="frame dashboard-surveys-error">
             <p className="text-h2">{error}</p>
-            <button type="button" className="button-primary dashboard-button-retry" onClick={handleRetry}>
+            <button type="button" className="button-primary dashboard-button-retry" onClick={loadSurveys}>
               <IconReload className="icon-primary" color="#FFFFFF" />
               <span>Повторить</span>
             </button>
@@ -174,23 +189,42 @@ function DashboardPage() {
         ) : (
           <div className="dashboard-surveys-grid">
             {filteredSurveys.map((survey) => (
-              <div className="frame dashboard-survey-card" key={survey.surveyID}>
+              <article className="frame dashboard-survey-card" key={survey.surveyID}>
                 <div className="dashboard-survey-header">
-                  <h2 className="text-h2 dashboard-survey-title">{survey.title}</h2>
-                  <button type="button" className="dashboard-survey-actions" disabled aria-label="Действия с опросом">
+                  <button
+                    type="button"
+                    className="dashboard-survey-title-button"
+                    onClick={() => navigate(`/surveys/${survey.surveyID}/edit`)}
+                  >
+                    <h2 className="text-h2 dashboard-survey-title">{survey.title}</h2>
+                  </button>
+                  <button
+                    type="button"
+                    className="dashboard-survey-actions"
+                    onClick={() => navigate(`/surveys/${survey.surveyID}/edit`)}
+                    aria-label="Редактировать опрос"
+                  >
                     <IconMoreVertical className="icon-secondary" />
                   </button>
                 </div>
+                <p className="text-helper dashboard-survey-description">{survey.description || "Без описания"}</p>
                 <span className={`text-small survey-status--${survey.status}`}>
                   {STATUS_LABELS[survey.status] || survey.status}
                 </span>
                 <div className="dashboard-survey-info">
-                  <p className="text-small">Ответов: 0</p>
-                  <p className="text-small">
-                    {survey.publishedAt ? new Date(survey.publishedAt).toLocaleDateString("ru-RU") : "Не опубликован"}
-                  </p>
+                  <p className="text-small">Вопросов: {survey.questionCount}</p>
+                  <p className="text-small">Ответов: {survey.responseCount}</p>
                 </div>
-              </div>
+                {survey.status === "published" ? (
+                  <button
+                    type="button"
+                    className="button-secondary dashboard-open-public"
+                    onClick={() => navigate(`/s/${survey.surveyID}`)}
+                  >
+                    Открыть
+                  </button>
+                ) : null}
+              </article>
             ))}
           </div>
         )}

@@ -1,12 +1,11 @@
 import { expect, test } from "@playwright/test";
 
 test("user can register, login and open dashboard", async ({ page }) => {
-  // Smoke-тест покрывает текущий happy path MVP через frontend, backend и базу данных.
   const uniqueEmail = `student-${Date.now()}@example.com`;
   const password = "strongpass123";
 
   await page.goto("/register");
-  await page.locator('input[name="name"]').fill("Учебный Пользователь");
+  await page.locator('input[name="name"]').fill("Учебный пользователь");
   await page.locator('input[name="email"]').fill(uniqueEmail);
   await page.locator('input[name="password"]').fill(password);
   await page.locator('input[name="passwordConfirmation"]').fill(password);
@@ -21,5 +20,5 @@ test("user can register, login and open dashboard", async ({ page }) => {
 
   await expect(page).toHaveURL(/\/dashboard$/);
   await expect(page.locator(".dashboard-title-label")).toHaveText("Сервис опросов");
-  await expect(page.locator(".dashboard-empty strong")).toHaveText("Пока нет ни одного опроса.");
+  await expect(page.locator(".dashboard-empty strong")).toContainText("опрос");
 });

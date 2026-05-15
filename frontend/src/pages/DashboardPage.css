@@ -151,6 +151,16 @@
     text-overflow: ellipsis;
 }
 
+.dashboard-survey-title-button {
+    min-width: 0;
+    text-align: left;
+}
+
+.dashboard-survey-description {
+    min-height: 42px;
+    overflow: hidden;
+}
+
 .dashboard-survey-actions {
     background: none;
     border: none;
@@ -162,7 +172,6 @@
     flex-shrink: 0;
 }
 
-/*
 .dashboard-survey-info {
     display: flex;
     flex-direction: row;
@@ -171,7 +180,10 @@
     gap: 8px;
     width: 100%;
 }
-*/
+
+.dashboard-open-public {
+    width: 100%;
+}
 
 @media (max-width: 1400px) {
     .dashboard-surveys-grid {
