@@ -1,21 +1,20 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
+import { IconClipboard, IconDoorOpen } from '../icons';
 
-import { IconClipboard, IconDoorOpen } from "../icons";
+function Header({ content = 'Сервис опросов', onLogout }) {
+    const navigate = useNavigate();
 
-function Header({ title = "Сервис опросов", onLogout }) {
-  const navigate = useNavigate();
-
-  return (
-    <header className="site-header">
-      <button className="header-logo" type="button" onClick={() => navigate("/dashboard")} aria-label="Открыть dashboard">
-        <IconClipboard className="icon-primary" />
-      </button>
-      <h1 className="text-h1 dashboard-title-label">{title}</h1>
-      <button type="button" className="header-button-logout" onClick={onLogout} aria-label="Выйти">
-        <IconDoorOpen className="icon-primary" />
-      </button>
-    </header>
-  );
+    return (
+        <header className='site-header'>
+            <div className='header-logo' onClick={() => navigate('/')}>
+                <IconClipboard className='icon-primary' />
+            </div>
+            <label className='text-h1'>{content}</label>
+            <button type='button' className='button-icon' onClick={onLogout}>
+                <IconDoorOpen className='icon-primary' />
+            </button>
+        </header>
+    );
 }
 
 export default Header;

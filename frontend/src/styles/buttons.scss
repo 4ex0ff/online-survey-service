@@ -1,0 +1,57 @@
+@use 'variables' as *;
+
+.button-primary,
+.button-secondary,
+.button-tertiary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: $radius-full;
+    transition: background-color 0.2s ease;
+    font-size: $font-size-button;
+}
+
+.button-primary {
+    background-color: $color-primary;
+    color: $color-surface;
+    padding: $spacing-sm $spacing-lg;
+    font-weight: $font-weight-medium;
+    height: fit-content;
+    &:hover {
+        background-color: $color-primary-hover;
+    }
+}
+
+.button-secondary {
+    background-color: $color-secondary;
+    border: 1.5px solid $color-border;
+    color: $color-text;
+    padding: $spacing-sm $spacing-lg;
+    font-weight: $font-weight-medium;
+    height: fit-content;
+    &:hover {
+        background-color: $color-secondary-hover;
+    }
+}
+
+.button-tertiary {
+    background-color: $color-surface;
+    color: $color-text;
+    font-weight: $font-weight-medium;
+    padding: $spacing-sm $spacing-lg;
+    height: fit-content;
+    &:hover {
+        background-color: $color-secondary;
+    }
+}
+
+.button-icon {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
