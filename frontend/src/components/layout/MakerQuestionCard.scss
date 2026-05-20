@@ -1,0 +1,107 @@
+@use '../../styles/variables.scss' as *;
+@use '../../styles/mixins.scss' as *;
+
+.maker-question-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    padding-top: $spacing-sm;
+    width: 100%;
+
+    .input-error {
+        top: 100%;
+        left: 1%;
+    }
+
+    .content-group {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: $spacing-xl;
+        padding-top: $spacing-sm;
+        width: 100%;
+    }
+
+    .title-group {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0;
+        width: 100%;
+    }
+
+    .type-select-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+        width: 60%;
+        @include mobile {
+            width: 80%;
+        }
+    }
+    
+    .type-select {
+        border: 1.5px solid $color-border;  
+        border-radius: $radius-sm;
+        padding: $spacing-sm;
+        cursor: pointer;
+
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        &::-ms-expand {
+            display: none;
+        }
+    }
+
+    .type-select-icon {
+        position: absolute;
+        right: $spacing-xs;
+        top: 50%;
+        transform: translateY(-50%);
+        pointer-events: none;
+        color: $color-text-muted;
+    }
+
+    .options-group {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: $spacing-md;
+        width: 100%;
+    }
+
+    .options-list {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: $spacing-lg;
+        width: 100%;
+    }
+
+    .option-wrapper {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: $spacing-md;
+        width: 100%;
+    }
+
+    .button-add-option {
+        color: $color-text-muted;
+    }
+
+    .footer-group {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
+}

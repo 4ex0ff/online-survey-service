@@ -1,12 +1,23 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 
 import { AuthContext } from "./AuthContext";
+import { setUnauthorizedHandler } from "../api/client";
 
 const AUTH_STORAGE_KEY = "survey-service-auth";
 
 function loadStoredAuth() {
-  // Восстанавливаем сессию после reload; некорректный JSON считаем состоянием без входа.
-  const raw = localStorage.getItem(AUTH_STORAGE_KEY);
+  let raw = localStorage.getItem(AUTH_STORAGE_KEY);
+  
+  // Для разработки: если localStorage пуст, создаётся тестовый токен
+  if (!raw && import.meta.env.DEV) {
+    raw = JSON.stringify({
+      token: 'dev-token-' + Math.random().toString(36).slice(2),
+      user: { userID: 1, name: 'Developer', isAdmin: false }
+    });
+    localStorage.setItem(AUTH_STORAGE_KEY, raw);
+    console.log('loadStoredAuth: created test token', raw);
+  }
+  
   if (!raw) {
     return { token: null, user: null };
   }
@@ -20,8 +31,7 @@ function loadStoredAuth() {
 }
 
 export function AuthProvider({ children }) {
-  // В MVP JWT хранится в localStorage; позже при необходимости можно перейти на httpOnly cookies.
-  const [authState, setAuthState] = useState(loadStoredAuth);
+  const [authState, setAuthState] = useState(() => loadStoredAuth());
 
   const signIn = (nextAuth) => {
     setAuthState(nextAuth);
@@ -32,6 +42,13 @@ export function AuthProvider({ children }) {
     setAuthState({ token: null, user: null });
     localStorage.removeItem(AUTH_STORAGE_KEY);
   };
+
+  // Регистрируем глобальный обработчик для 401 ошибок
+  useEffect(() => {
+    setUnauthorizedHandler(() => {
+      signOut();
+    });
+  }, []);
 
   const value = useMemo(
     () => ({
