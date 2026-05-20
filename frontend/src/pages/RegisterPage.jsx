@@ -8,7 +8,7 @@ import { IconUser, IconMail, IconLock, IconEye, IconEyeOff } from '../components
 function RegisterPage() {
     {/* --- Состояния компонента --- */}
     const navigate = useNavigate();
-    const [formData, setFormData] = useState({ username: '', email: '', password: '', confirmPassword: '' });
+    const [formData, setFormData] = useState({ name: '', email: '', password: '', confirmPassword: '' });
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -17,8 +17,8 @@ function RegisterPage() {
     {/* --- Обработчики действий пользователя --- */}
     const validateForm = useCallback(() => {
         const newErrors = {};
-        if (!formData.username) {
-            newErrors.username = 'Имя пользователя обязательно';
+        if (!formData.name) {
+            newErrors.name = 'Имя обязательно';
         }
 
         if (!formData.email) {
@@ -67,7 +67,7 @@ function RegisterPage() {
 
         try {
             await registerUser({
-                name: formData.username,
+                name: formData.name,
                 email: formData.email,
                 password: formData.password
             });
@@ -92,27 +92,27 @@ function RegisterPage() {
 
                 {/* --- Юзернейм --- */}
                 <div className="input-group">
-                    <label htmlFor="username" className="text-body">
+                    <label htmlFor="name" className="text-body">
                         Имя пользователя <span className="required-star">*</span>
                     </label>
                     <div className="input-wrapper">
                         <IconUser className='icon-secondary' />
                         <input
                             className="text-helper input-field"
-                            id="username"
-                            name="username"
+                            id="name"
+                            name="name"
                             type="text"
                             placeholder="Как к вам обращаться?"
-                            value={formData.username}
+                            value={formData.name}
                             onChange={handleInputChange}
-                            aria-invalid={!!errors.username}
-                            aria-describedby={errors.username ? 'username-error' : undefined}
+                            aria-invalid={!!errors.name}
+                            aria-describedby={errors.name ? 'name-error' : undefined}
                         />
                     </div>
                     <div className="input-line" />
-                    {errors.username &&
-                        <p id="username-error" className="input-error">
-                            {errors.username}
+                    {errors.name &&
+                        <p id="name-error" className="input-error">
+                            {errors.name}
                         </p>
                     }
                 </div>
