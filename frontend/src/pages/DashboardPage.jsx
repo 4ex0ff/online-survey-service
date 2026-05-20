@@ -1,206 +1,238 @@
-﻿import { useEffect, useState, useCallback, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../providers/useAuth';
-import { getSurveys, deleteSurvey } from '../api/surveys';
-import { getSurveyErrorMessage } from '../api/errorMessages';
-import { logoutUser } from '../api/auth';
-import './DashboardPage.scss';
-import Header from '../components/layout/Header';
-import Footer from '../components/layout/Footer';
-import { IconSearch, IconFilter, IconTrash, IconReload, IconX, IconChevronDown } from '../components/icons';
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+import { ApiError } from "../api/client";
+import { createSurvey, getSurveys } from "../api/surveys";
+import Footer from "../components/layout/Footer";
+import Header from "../components/layout/Header";
+import { IconFilter, IconMoreVertical, IconReload, IconSearch } from "../components/icons";
+import { useAuth } from "../providers/useAuth";
+import "./DashboardPage.css";
+
+const STATUS_LABELS = {
+  published: "Опубликован",
+  draft: "Черновик",
+  closed: "Закрыт",
+};
 
 function DashboardPage() {
-    {/* --- Состояния компонента --- */}
-    const navigate = useNavigate();
-    const { token, signOut } = useAuth();
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
-    const [surveys, setSurveys] = useState([]);
-    const [filter, setFilter] = useState('all');    // 'all', 'published', 'draft', 'closed'
-    const [searchQuery, setSearchQuery] = useState('');
-    const [debouncedQuery, setDebouncedQuery] = useState('');
-    
-    {/* --- Загрузка опросов --- */}
-    const fetchSurveys = useCallback(async () => {
-        if (!token) {
-            navigate('/login');
-            return;
-        }
+  const navigate = useNavigate();
+  const { token, signOut } = useAuth();
+  const [loading, setLoading] = useState(true);
+  const [creating, setCreating] = useState(false);
+  const [error, setError] = useState("");
+  const [surveys, setSurveys] = useState([]);
+  const [filter, setFilter] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
 
-        setLoading(true);
-        setError('');
+  const handleUnauthorized = useCallback(() => {
+    signOut();
+    navigate("/login", { replace: true });
+  }, [navigate, signOut]);
 
-        try {
-            const data = await getSurveys(token);
-            const formatted = data.map(survey => ({
-                id: survey.surveyID,
-                title: survey.title,
-                status: survey.status,
-                publishedAt: survey.publishedAt,
-                createdAt: survey.publishedAt
-                    ? new Date(survey.publishedAt).toLocaleDateString('ru-RU')
-                    : '—'
-            }));
-            setSurveys(formatted);
-        } catch (err) {
-            console.error('Fetch surveys error:', err);
-            setError(getSurveyErrorMessage(err, 'Не удалось загрузить опросы.'));
-        } finally {
-            setLoading(false);
-        }
-    }, [navigate, token]);
-
-    useEffect(() => {
-        fetchSurveys();
-    }, [fetchSurveys]);
-
-    {/* --- Фильтрация и поиск --- */}
-    // Дебаунс для оптимизации поиска
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setDebouncedQuery(searchQuery);
-        }, 300);
-        return () => clearTimeout(timer);
-    }, [searchQuery]);
-
-    const filteredSurveys = useMemo(() => {
-        let result = surveys;
-        if (filter !== 'all') {
-            result = result.filter(s => s.status === filter);
-        }
-        if (debouncedQuery.trim()) {
-            const q = debouncedQuery.toLowerCase();
-            result = result.filter(s => s.title.toLowerCase().includes(q));
-        }
-        return result;
-    }, [surveys, filter, debouncedQuery]);
-
-    {/* --- Обработчики действий пользователя --- */}
-    const handleLogout = useCallback(async () => {
-        try {
-            await logoutUser(token);
-        } catch (err) {
-            console.error('Logout error:', err);
-        } finally {
-            signOut();
-            navigate('/login');
-        }
-    }, [token, navigate, signOut]);
-
-    const handleCreateSurvey = () => {
-        navigate('/maker');
-    };
-
-    const handleDeleteSurvey = useCallback(async (surveyId, surveyTitle) => {
-        if (!window.confirm(`Удалить опрос "${surveyTitle}"? Это действие нельзя отменить.`)) {
-            return;
-        }
-
-        try {
-            await deleteSurvey(token, surveyId);
-            setSurveys(prevSurveys => prevSurveys.filter(s => s.id !== surveyId));
-            console.log('Опрос удалён');
-        } catch (err) {
-            console.error('Delete error:', err);
-            alert(getSurveyErrorMessage(err, 'Не удалось удалить опрос'));
-        }
-    }, [token]);
-
-    const handleRetry = () => fetchSurveys();
-
-    {/* --- Состояния сетки опросов --- */}
-    let content;
-    if (loading) {
-        content = (
-            <div className='loading-frame'>
-                <div className='spinner'></div>
-                <p className='text-h2'>Загрузка...</p>
-            </div>
-        );
-    } else if (error) {
-        content = (
-            <div className='frame surveys-error'>
-                <p className='text-h2'>{error}</p>
-                <button type='button' className='button-primary button-retry' onClick={handleRetry}>
-                    <IconReload className='icon-primary' color='#FFFFFF' />
-                    <span>Повторить</span>
-                </button>
-            </div>
-        );
-    } else if (filteredSurveys.length === 0) {
-        content = (
-            <div className='frame surveys-empty'>
-                <p className='text-h2'>
-                    {surveys.length === 0 ? 'У вас пока нет опросов' : 'Не найдено соответствующих опросов'}
-                </p>
-            </div>
-        );
-    } else {
-        content = (
-            <div className='surveys-grid'>
-                {filteredSurveys.map(survey => (
-                    <div className='frame survey-card' key={survey.id}>
-                        <div className='survey-header'>
-                            <h2 className='text-h2 survey-title' onClick={() => navigate(`/maker/${survey.id}`)}>
-                                {survey.title}
-                            </h2>
-                            <button type='button' className='button-icon' onClick={() => handleDeleteSurvey(survey.id, survey.title)}>
-                                <IconTrash className='icon-secondary' />
-                            </button>
-                        </div>
-                        <span className={`text-small survey-status--${survey.status}`}>
-                            {survey.status === 'published' ? 'Опубликован'
-                                : survey.status === 'draft' ? 'Черновик'
-                                : 'Закрыт'}
-                        </span>
-                        <p className='text-small'>{survey.createdAt}</p>
-                    </div>
-                ))}
-            </div>
-        )
+  const loadSurveys = useCallback(async () => {
+    if (!token) {
+      handleUnauthorized();
+      return;
     }
 
-    {/* --- Разметка страницы --- */}
-    return(
-        <div className='page dashboard-page'>
-            {/* --- Header --- */}
-            <Header onLogout={handleLogout} />
+    try {
+      setLoading(true);
+      setError("");
+      setSurveys(await getSurveys(token));
+    } catch (requestError) {
+      if (requestError instanceof ApiError && requestError.status === 401) {
+        handleUnauthorized();
+        return;
+      }
+      setError("Не удалось загрузить опросы");
+    } finally {
+      setLoading(false);
+    }
+  }, [handleUnauthorized, token]);
 
-            {/* --- Управление --- */}
-            <div className='controls-group'>
-                <button type='button' className='button-primary button-create' onClick={handleCreateSurvey}>
-                    <IconX className='icon-primary ' color='white' />
-                </button>
-                <div className='frame search-wrapper'>
-                    <IconSearch className='icon-primary' />
-                    <input
-                        className='text-body input-field'
-                        type='text'
-                        placeholder='Поиск'
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                    />
-                </div>
-                <div className='button-tertiary filter-select-wrapper'>
-                    <IconFilter className='icon-primary filter-select-icon' />
-                    <select className='text-body input-field filter-select' id='filter' name='filter' value={filter} onChange={(e) => setFilter(e.target.value)}>
-                        <option value='all'> | Все опросы</option>
-                        <option value='published'> | Опубликован</option>
-                        <option value='draft'> | Черновик</option>
-                        <option value='closed'> | Закрыт</option>
-                    </select>
-                </div>
-            </div>
+  useEffect(() => {
+    let active = true;
 
-            {/* --- Список опросов --- */}
-            <div className={'surveys-group'}>
-                {content}
-            </div>
+    if (!token) {
+      handleUnauthorized();
+      return undefined;
+    }
 
-            {/* --- Footer --- */}
-            <Footer />
+    const loadInitialSurveys = async () => {
+      try {
+        const response = await getSurveys(token);
+        if (active) {
+          setSurveys(response);
+        }
+      } catch (requestError) {
+        if (!active) {
+          return;
+        }
+        if (requestError instanceof ApiError && requestError.status === 401) {
+          handleUnauthorized();
+          return;
+        }
+        setError("Не удалось загрузить опросы");
+      } finally {
+        if (active) {
+          setLoading(false);
+        }
+      }
+    };
+
+    loadInitialSurveys();
+
+    return () => {
+      active = false;
+    };
+  }, [handleUnauthorized, token]);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setDebouncedQuery(searchQuery);
+    }, 300);
+
+    return () => window.clearTimeout(timer);
+  }, [searchQuery]);
+
+  const filteredSurveys = useMemo(() => {
+    const query = debouncedQuery.trim().toLowerCase();
+
+    return surveys
+      .filter((survey) => (filter === "all" ? true : survey.status === filter))
+      .filter((survey) => (query ? survey.title.toLowerCase().includes(query) : true));
+  }, [debouncedQuery, filter, surveys]);
+
+  const handleLogout = () => {
+    signOut();
+    navigate("/login", { replace: true });
+  };
+
+  const handleCreate = async () => {
+    if (!token) {
+      handleUnauthorized();
+      return;
+    }
+
+    try {
+      setCreating(true);
+      setError("");
+      const survey = await createSurvey(token, { title: "Новый опрос", description: "" });
+      navigate(`/surveys/${survey.surveyID}/edit`);
+    } catch (requestError) {
+      if (requestError instanceof ApiError && requestError.status === 401) {
+        handleUnauthorized();
+        return;
+      }
+      setError("Не удалось создать опрос");
+    } finally {
+      setCreating(false);
+    }
+  };
+
+  const handleFilterClick = () => {
+    const nextFilter = filter === "all" ? "published" : filter === "published" ? "draft" : "all";
+    setFilter(nextFilter);
+  };
+
+  return (
+    <div className="page dashboard-page">
+      <Header onLogout={handleLogout} />
+
+      <div className="dashboard-controls">
+        <button type="button" className="button-primary dashboard-button-create" onClick={handleCreate} disabled={creating}>
+          <span className="dashboard-create-full">{creating ? "Создание..." : "+Создать"}</span>
+          <span className="dashboard-create-short">+</span>
+        </button>
+        <div className="frame dashboard-search-wrapper">
+          <IconSearch className="icon-primary" />
+          <input
+            className="text-body dashboard-search-field"
+            type="text"
+            placeholder="Поиск"
+            value={searchQuery}
+            onChange={(event) => setSearchQuery(event.target.value)}
+          />
         </div>
-    );
+        <button
+          type="button"
+          className="button-tertiary dashboard-button-filter"
+          onClick={handleFilterClick}
+          title={`Фильтр: ${filter === "all" ? "все" : STATUS_LABELS[filter]}`}
+        >
+          <IconFilter className="icon-primary" />
+        </button>
+      </div>
+
+      <div className={`dashboard-surveys-group ${loading || error || filteredSurveys.length === 0 ? "centered" : ""}`}>
+        {loading ? (
+          <div className="frame dashboard-surveys-loading">
+            <div className="dashboard-spinner" />
+            <p className="text-h2">Загрузка...</p>
+          </div>
+        ) : error ? (
+          <div className="frame dashboard-surveys-error">
+            <p className="text-h2">{error}</p>
+            <button type="button" className="button-primary dashboard-button-retry" onClick={loadSurveys}>
+              <IconReload className="icon-primary" color="#FFFFFF" />
+              <span>Повторить</span>
+            </button>
+          </div>
+        ) : filteredSurveys.length === 0 ? (
+          <div className="frame dashboard-surveys-empty dashboard-empty">
+            <strong className="text-h2">
+              {surveys.length === 0 ? "Пока нет ни одного опроса." : "Не найдено соответствующих опросов"}
+            </strong>
+          </div>
+        ) : (
+          <div className="dashboard-surveys-grid">
+            {filteredSurveys.map((survey) => (
+              <article className="frame dashboard-survey-card" key={survey.surveyID}>
+                <div className="dashboard-survey-header">
+                  <button
+                    type="button"
+                    className="dashboard-survey-title-button"
+                    onClick={() => navigate(`/surveys/${survey.surveyID}/edit`)}
+                  >
+                    <h2 className="text-h2 dashboard-survey-title">{survey.title}</h2>
+                  </button>
+                  <button
+                    type="button"
+                    className="dashboard-survey-actions"
+                    onClick={() => navigate(`/surveys/${survey.surveyID}/edit`)}
+                    aria-label="Редактировать опрос"
+                  >
+                    <IconMoreVertical className="icon-secondary" />
+                  </button>
+                </div>
+                <p className="text-helper dashboard-survey-description">{survey.description || "Без описания"}</p>
+                <span className={`text-small survey-status--${survey.status}`}>
+                  {STATUS_LABELS[survey.status] || survey.status}
+                </span>
+                <div className="dashboard-survey-info">
+                  <p className="text-small">Вопросов: {survey.questionCount}</p>
+                  <p className="text-small">Ответов: {survey.responseCount}</p>
+                </div>
+                {survey.status === "published" ? (
+                  <button
+                    type="button"
+                    className="button-secondary dashboard-open-public"
+                    onClick={() => navigate(`/s/${survey.surveyID}`)}
+                  >
+                    Открыть
+                  </button>
+                ) : null}
+              </article>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <Footer />
+    </div>
+  );
 }
 
 export default DashboardPage;

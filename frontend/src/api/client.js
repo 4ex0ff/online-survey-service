@@ -12,14 +12,8 @@ export class ApiError extends Error {
   }
 }
 
-// Глобальный обработчик для 401 ошибок (неавторизованный доступ)
-let unauthorizedHandler = null;
-
-export function setUnauthorizedHandler(handler) {
-  unauthorizedHandler = handler;
-}
-
 export async function request(path, options = {}) {
+  // Use relative /api paths; Vite proxies them in dev and Nginx proxies them in production.
   const { method = "GET", body, token } = options;
   const headers = {
     ...(body ? JSON_HEADERS : {}),
@@ -48,11 +42,6 @@ export async function request(path, options = {}) {
   }
 
   if (!response.ok) {
-    // Если 401, вызываем глобальный обработчик перед выбросом ошибки
-    if (response.status === 401 && unauthorizedHandler) {
-      unauthorizedHandler();
-    }
-    
     throw new ApiError(
       payload?.message || "Request failed",
       response.status,

@@ -28,13 +28,6 @@ export function updateSurvey(token, surveyID, payload) {
   });
 }
 
-export function deleteSurvey(token, surveyID) {
-  return request(`/api/surveys/${surveyID}`, {
-    method: "DELETE",
-    token,
-  });
-}
-
 export function publishSurvey(token, surveyID) {
   return request(`/api/surveys/${surveyID}/publish`, {
     method: "POST",
