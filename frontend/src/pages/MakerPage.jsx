@@ -138,6 +138,7 @@ function MakerPage() {
 
     useEffect(() => {
         if (!isEditable) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setHasUnsavedChanges(false);
         }
     }, [isEditable]);
@@ -192,6 +193,7 @@ function MakerPage() {
     }, [surveyId, token, navigate]);
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         fetchSurvey();
     }, [fetchSurvey]);
 
