@@ -5,17 +5,8 @@ import { AuthContext } from "./AuthContext";
 const AUTH_STORAGE_KEY = "survey-service-auth";
 
 function loadStoredAuth() {
-  let raw = localStorage.getItem(AUTH_STORAGE_KEY);
-  
-  // Для разработки: если localStorage пуст, создаём тестовый токен
-  if (!raw && import.meta.env.DEV) {
-    raw = JSON.stringify({
-      token: 'dev-token-' + Math.random().toString(36).slice(2),
-      user: { userID: 1, name: 'Developer', isAdmin: false }
-    });
-    localStorage.setItem(AUTH_STORAGE_KEY, raw);
-  }
-  
+  // Восстанавливаем сессию после reload; некорректный JSON считаем состоянием без входа.
+  const raw = localStorage.getItem(AUTH_STORAGE_KEY);
   if (!raw) {
     return { token: null, user: null };
   }
@@ -29,8 +20,8 @@ function loadStoredAuth() {
 }
 
 export function AuthProvider({ children }) {
-  const [authState, setAuthState] = useState(() => loadStoredAuth());
-  const [isLoading] = useState(false);
+  // В MVP JWT хранится в localStorage; позже при необходимости можно перейти на httpOnly cookies.
+  const [authState, setAuthState] = useState(loadStoredAuth);
 
   const signIn = (nextAuth) => {
     setAuthState(nextAuth);
@@ -46,11 +37,10 @@ export function AuthProvider({ children }) {
     () => ({
       ...authState,
       isAuthenticated: Boolean(authState.token && authState.user),
-      isLoading,
       signIn,
       signOut,
     }),
-    [authState, isLoading],
+    [authState],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

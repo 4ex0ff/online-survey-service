@@ -1,254 +1,248 @@
-﻿import { useState, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './RegisterPage.scss';
-import { IconUser, IconMail, IconLock, IconEye, IconEyeOff } from '../components/icons';
+import { useCallback, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+import { registerUser } from "../api/auth";
+import { getApiErrorMessage } from "../api/errorMessages";
+import { IconEye, IconEyeOff, IconLock, IconMail, IconUser } from "../components/icons";
+import "./RegisterPage.css";
 
 function RegisterPage() {
-    {/* --- Состояния компонента --- */}
-    const navigate = useNavigate();
-    const [formData, setFormData] = useState({ username: '', email: '', password: '', confirmPassword: '' });
-    const [errors, setErrors] = useState({});
-    const [loading, setLoading] = useState(false);
-    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-    const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
+  // Register адаптирует внешнюю форму под контракт backend: name, email, password.
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({ name: "", email: "", password: "", passwordConfirmation: "" });
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
 
-    {/* --- Обработчики действий пользователя --- */}
-    const validateForm = useCallback(() => {
-        const newErrors = {};
-        if (!formData.username) {
-            newErrors.username = 'Имя пользователя обязательно';
-        }
+  const validateForm = useCallback(() => {
+    // Проверяем ограничения backend перед запросом: name >= 2, password >= 8.
+    const newErrors = {};
 
-        if (!formData.email) {
-            newErrors.email = 'Email обязателен';
-        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-            newErrors.email = 'Неверный формат email';
-        }
-    
-        if (!formData.password) {
-            newErrors.password = 'Пароль обязателен';
-        } else if (formData.password.length < 8) {
-            newErrors.password = 'Пароль должен содержать не менее 8 символов';
-        }
+    if (!formData.name) {
+      newErrors.name = "Имя пользователя обязательно";
+    } else if (formData.name.trim().length < 2) {
+      newErrors.name = "Имя должно содержать минимум 2 символа";
+    }
 
-        if (!formData.confirmPassword) {
-            newErrors.confirmPassword = 'Подтверждение пароля обязательно';
-        } else if (formData.password !== formData.confirmPassword) {
-            newErrors.confirmPassword = 'Пароли не совпадают';
-        }
-    
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    }, [formData]);
+    if (!formData.email) {
+      newErrors.email = "Email обязателен";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "Неверный формат email";
+    }
 
-    const handleInputChange = useCallback((event) => {
-        const { name, value } = event.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
+    if (!formData.password) {
+      newErrors.password = "Пароль обязателен";
+    } else if (formData.password.length < 8) {
+      newErrors.password = "Пароль должен содержать не менее 8 символов";
+    }
 
-        if (errors[name]) {
-            setErrors((prev) => ({ ...prev, [name]: '' }));
-        }
-        if (errors.general) {
-            setErrors((prev) => ({ ...prev, general: '' }));
-        }
-    }, [errors]);
+    if (!formData.passwordConfirmation) {
+      newErrors.passwordConfirmation = "Подтверждение пароля обязательно";
+    } else if (formData.password !== formData.passwordConfirmation) {
+      newErrors.passwordConfirmation = "Пароли не совпадают";
+    }
 
-    const handleRegister = useCallback(async (event) => {
-        event.preventDefault();
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  }, [formData]);
 
-        if (!validateForm()) {
-            return;
-        }
+  const handleInputChange = useCallback(
+    (event) => {
+      const { name, value } = event.target;
+      setFormData((current) => ({ ...current, [name]: value }));
 
-        setLoading(true);
-        setErrors({});
+      if (errors[name] || errors.general) {
+        setErrors((current) => ({ ...current, [name]: "", general: "" }));
+      }
+    },
+    [errors],
+  );
 
-        try {
-            const response = await fetch('/api/auth/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    name: formData.username,
-                    email: formData.email,
-                    password: formData.password
-                }),
-            });
+  const handleRegister = useCallback(
+    async (event) => {
+      // Register endpoint пока не возвращает token, поэтому пользователь продолжает через /login.
+      event.preventDefault();
 
-            if (!response.ok) {
-                let errorMessage = 'Не удалось зарегистрироваться';
-                try {
-                    const errorData = await response.json();
-                    errorMessage = errorData.message || errorMessage;
-                } catch {
-                    errorMessage = `Ошибка ${response.status}: ${response.statusText}`;
-                }
-                throw new Error(errorMessage);
-            }
+      if (!validateForm()) {
+        return;
+      }
 
-            await response.json();
-            navigate('/login', { state: { message: 'Регистрация прошла успешно! Войдите в аккаунт.' } });
-        }catch (error) {
-            setErrors({ general: error.message || 'Не удалось зарегистрироваться' });
-        } finally {
-            setLoading(false);
-        }
-    }, [formData, navigate, validateForm]);
+      setLoading(true);
+      setErrors({});
 
-    {/* --- Разметка страницы --- */}
-    return (
-        <div className="page register-page">
-            <form className="frame" onSubmit={handleRegister}>
-                {/* --- Заголовок --- */}
-                <div className="title-group">
-                    <h1 className="text-h1">Регистрация</h1>
-                    <div className="line-separator" />
-                </div>
+      try {
+        await registerUser({
+          name: formData.name.trim(),
+          email: formData.email.trim().toLowerCase(),
+          password: formData.password,
+        });
+        navigate("/login", {
+          replace: true,
+          state: { message: "Регистрация прошла успешно. Теперь войдите в систему." },
+        });
+      } catch (error) {
+        setErrors({ general: getApiErrorMessage(error, "Не удалось зарегистрироваться") });
+      } finally {
+        setLoading(false);
+      }
+    },
+    [formData, navigate, validateForm],
+  );
 
-                {/* --- Юзернейм --- */}
-                <div className="input-group">
-                    <label htmlFor="username" className="text-body">
-                        Имя пользователя <span className="required-star">*</span>
-                    </label>
-                    <div className="input-wrapper">
-                        <IconUser className='icon-secondary' />
-                        <input
-                            className="text-helper input-field"
-                            id="username"
-                            name="username"
-                            type="text"
-                            placeholder="Как к вам обращаться?"
-                            value={formData.username}
-                            onChange={handleInputChange}
-                            aria-invalid={!!errors.username}
-                            aria-describedby={errors.username ? 'username-error' : undefined}
-                        />
-                    </div>
-                    <div className="input-line" />
-                    {errors.username &&
-                        <p id="username-error" className="input-error">
-                            {errors.username}
-                        </p>
-                    }
-                </div>
-
-                {/* --- Email --- */}
-                <div className="input-group">
-                    <label htmlFor="email" className="text-body">
-                        Email <span className="required-star">*</span>
-                    </label>
-                    <div className="input-wrapper">
-                        <IconMail className='icon-secondary' />
-                        <input
-                            className="text-helper input-field"
-                            id="email"
-                            name="email"
-                            type="email"
-                            placeholder="email@example.com"
-                            value={formData.email}
-                            onChange={handleInputChange}
-                            aria-invalid={!!errors.email}
-                            aria-describedby={errors.email ? 'email-error' : undefined}
-                        />
-                    </div>
-                    <div className="input-line" />
-                    {errors.email &&
-                        <p id="email-error" className="input-error">
-                            {errors.email}
-                        </p>
-                    }
-                </div>
-
-                {/* --- Пароль --- */}
-                <div className="input-group">
-                    <label htmlFor="password" className="text-body">
-                        Пароль <span className="required-star">*</span>
-                    </label>
-                    <div className="password-wrapper">
-                        <div className="input-wrapper">
-                            <IconLock className='icon-secondary' />
-                            <input
-                                className="text-helper input-field"
-                                id="password"
-                                name="password"
-                                type={isPasswordVisible ? 'text' : 'password'}
-                                placeholder="Введите ваш пароль"
-                                value={formData.password}
-                                onChange={handleInputChange}
-                                aria-invalid={!!errors.password}
-                                aria-describedby={errors.password ? 'password-error' : undefined}
-                            />
-                        </div>
-                        <button
-                            type="button"
-                            className="button-icon"
-                            onClick={() => setIsPasswordVisible(!isPasswordVisible)}
-                        >
-                            {isPasswordVisible ? <IconEyeOff className='icon-secondary' /> : <IconEye className='icon-secondary' />}
-                        </button>
-                    </div>
-                    <div className="input-line" />
-                    {errors.password &&
-                        <p id="password-error" className="input-error">
-                            {errors.password}
-                        </p>
-                    }
-                </div>
-
-                {/* --- Подтверждение пароля --- */}
-                <div className="input-group">
-                    <label htmlFor="confirmPassword" className="text-body">
-                        Подтвердите пароль <span className="required-star">*</span>
-                    </label>
-                    <div className="password-wrapper">
-                        <div className="input-wrapper">
-                            <IconLock className='icon-secondary' />
-                            <input
-                                className="text-helper input-field"
-                                id="confirmPassword"
-                                name="confirmPassword"
-                                type={isConfirmPasswordVisible ? 'text' : 'password'}
-                                placeholder="Подтвердите ваш пароль"
-                                value={formData.confirmPassword}
-                                onChange={handleInputChange}
-                                aria-invalid={!!errors.confirmPassword}
-                                aria-describedby={errors.confirmPassword ? 'confirmPassword-error' : undefined}
-                            />
-                        </div>
-                        <button
-                            type="button"
-                            className="button-icon"
-                            onClick={() => setIsConfirmPasswordVisible(!isConfirmPasswordVisible)}
-                        >
-                            {isConfirmPasswordVisible ? <IconEyeOff className='icon-secondary' /> : <IconEye className='icon-secondary' />}
-                        </button>
-                    </div>
-                    <div className="input-line" />
-                    {errors.confirmPassword &&
-                        <p id="confirmPassword-error" className="input-error">
-                            {errors.confirmPassword}
-                        </p>
-                    }
-                </div>
-
-                {/* --- Кнопки --- */}
-                <div className="submit-group">
-                    {/* --- Общая ошибка --- */}
-                    {errors.general &&
-                        <div className="error-frame" role="alert">
-                            {errors.general}
-                        </div>
-                    }
-
-                    <button type="submit" className="button-primary">
-                        {loading ? 'Регистрация...' : 'Зарегистрироваться'}
-                    </button>
-                    <button type="button" className="button-secondary" onClick={() => navigate('/login')}>
-                        Назад
-                    </button>
-                </div>
-            </form>
+  return (
+    <div className="page register-page">
+      <form className="frame register-frame" onSubmit={handleRegister} noValidate>
+        <div className="register-title-group">
+          <h1 className="text-h1">Регистрация</h1>
+          <div className="register-title-line" />
         </div>
-    );
+
+        <div className="register-input-group">
+          <label htmlFor="name" className="text-small">
+            Имя пользователя <span className="required-star">*</span>
+          </label>
+          <div className="register-input-wrapper">
+            <IconUser className="icon-secondary" />
+            <input
+              className="text-helper register-input-field"
+              id="name"
+              name="name"
+              type="text"
+              placeholder="Как к вам обращаться?"
+              value={formData.name}
+              onChange={handleInputChange}
+              aria-invalid={Boolean(errors.name)}
+              aria-describedby={errors.name ? "name-error" : undefined}
+              autoComplete="name"
+            />
+          </div>
+          <div className="register-input-line" />
+          {errors.name ? (
+            <p id="name-error" className="text-helper error-frame">
+              {errors.name}
+            </p>
+          ) : null}
+        </div>
+
+        <div className="register-input-group">
+          <label htmlFor="email" className="text-small">
+            Email <span className="required-star">*</span>
+          </label>
+          <div className="register-input-wrapper">
+            <IconMail className="icon-secondary" />
+            <input
+              className="text-helper register-input-field"
+              id="email"
+              name="email"
+              type="email"
+              placeholder="email@example.com"
+              value={formData.email}
+              onChange={handleInputChange}
+              aria-invalid={Boolean(errors.email)}
+              aria-describedby={errors.email ? "email-error" : undefined}
+              autoComplete="email"
+            />
+          </div>
+          <div className="register-input-line" />
+          {errors.email ? (
+            <p id="email-error" className="text-helper error-frame">
+              {errors.email}
+            </p>
+          ) : null}
+        </div>
+
+        <div className="register-input-group">
+          <label htmlFor="password" className="text-small">
+            Пароль <span className="required-star">*</span>
+          </label>
+          <div className="register-password-wrapper">
+            <div className="register-input-wrapper">
+              <IconLock className="icon-secondary" />
+              <input
+                className="text-helper register-input-field"
+                id="password"
+                name="password"
+                type={isPasswordVisible ? "text" : "password"}
+                placeholder="Введите ваш пароль"
+                value={formData.password}
+                onChange={handleInputChange}
+                aria-invalid={Boolean(errors.password)}
+                aria-describedby={errors.password ? "password-error" : undefined}
+                autoComplete="new-password"
+              />
+            </div>
+            <button
+              type="button"
+              className="register-password-toggle"
+              onClick={() => setIsPasswordVisible((current) => !current)}
+              aria-label={isPasswordVisible ? "Скрыть пароль" : "Показать пароль"}
+            >
+              {isPasswordVisible ? <IconEyeOff className="icon-secondary" /> : <IconEye className="icon-secondary" />}
+            </button>
+          </div>
+          <div className="register-input-line" />
+          {errors.password ? (
+            <p id="password-error" className="text-helper error-frame">
+              {errors.password}
+            </p>
+          ) : null}
+        </div>
+
+        <div className="register-input-group">
+          <label htmlFor="passwordConfirmation" className="text-small">
+            Подтвердите пароль <span className="required-star">*</span>
+          </label>
+          <div className="register-password-wrapper">
+            <div className="register-input-wrapper">
+              <IconLock className="icon-secondary" />
+              <input
+                className="text-helper register-input-field"
+                id="passwordConfirmation"
+                name="passwordConfirmation"
+                type={isConfirmPasswordVisible ? "text" : "password"}
+                placeholder="Подтвердите ваш пароль"
+                value={formData.passwordConfirmation}
+                onChange={handleInputChange}
+                aria-invalid={Boolean(errors.passwordConfirmation)}
+                aria-describedby={errors.passwordConfirmation ? "passwordConfirmation-error" : undefined}
+                autoComplete="new-password"
+              />
+            </div>
+            <button
+              type="button"
+              className="register-password-toggle"
+              onClick={() => setIsConfirmPasswordVisible((current) => !current)}
+              aria-label={isConfirmPasswordVisible ? "Скрыть пароль" : "Показать пароль"}
+            >
+              {isConfirmPasswordVisible ? <IconEyeOff className="icon-secondary" /> : <IconEye className="icon-secondary" />}
+            </button>
+          </div>
+          <div className="register-input-line" />
+          {errors.passwordConfirmation ? (
+            <p id="passwordConfirmation-error" className="text-helper error-frame">
+              {errors.passwordConfirmation}
+            </p>
+          ) : null}
+        </div>
+
+        <div className="register-submit-group">
+          {errors.general ? (
+            <div className="error-frame" role="alert">
+              {errors.general}
+            </div>
+          ) : null}
+
+          <button type="submit" className="button-primary register-button-primary" disabled={loading}>
+            {loading ? "Регистрация..." : "Зарегистрироваться"}
+          </button>
+          <button type="button" className="button-secondary register-button-secondary" onClick={() => navigate("/login")}>
+            Назад
+          </button>
+        </div>
+      </form>
+    </div>
+  );
 }
 
 export default RegisterPage;
