@@ -14,6 +14,7 @@ function LoginPage() {
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+    const success = location.state?.message || "";
 
     {/* --- Обработчики действий пользователя --- */}
     const validateForm = useCallback(() => {
@@ -85,6 +86,11 @@ function LoginPage() {
                 <div className="title-group">
                     <h1 className="text-h1">Авторизация</h1>
                     <div className="line-separator" />
+                    {success &&
+                        <div className='success-frame' role='status'>
+                            {success}
+                        </div>
+                    }
                 </div>
 
                 {/* --- Email --- */}
