@@ -15,3 +15,17 @@ export function loginUser(payload) {
     body: payload,
   });
 }
+
+export function logoutUser(token) {
+  // Logout — опциональный запрос на бэкенд, может быть пропущен если токен удаляется на клиенте
+  if (!token) {
+    return Promise.resolve();
+  }
+  return request("/api/auth/logout", {
+    method: "POST",
+    token,
+  }).catch(err => {
+    // Даже если logout эндпоинт недоступен, не блокируем выход
+    console.error('Logout request error:', err);
+  });
+}

@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Этот скрипт запускается на VPS из GitHub Actions, но его можно выполнить и вручную по SSH.
+# Runs on the VPS from GitHub Actions, and can also be launched manually over SSH.
 APP_DIR="${APP_DIR:-/opt/survey-service}"
-DEPLOY_BRANCH="${DEPLOY_BRANCH:-main}"
 
 if [[ ! -d "$APP_DIR/.git" ]]; then
   echo "Repository not found in $APP_DIR"
@@ -12,7 +11,13 @@ fi
 
 cd "$APP_DIR"
 git config core.filemode false
-# Держим серверный checkout только fast-forward, чтобы деплой не мог незаметно переписать историю.
+
+CURRENT_BRANCH="$(git branch --show-current 2>/dev/null || true)"
+DEPLOY_BRANCH="${DEPLOY_BRANCH:-${CURRENT_BRANCH:-main}}"
+
+echo "Deploying branch: $DEPLOY_BRANCH"
+
+# Keep server checkouts fast-forward only, so deploy cannot silently rewrite history.
 git fetch origin "$DEPLOY_BRANCH"
 git checkout "$DEPLOY_BRANCH"
 git pull --ff-only origin "$DEPLOY_BRANCH"
