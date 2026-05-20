@@ -1,4 +1,4 @@
-import { ApiError } from "./client";
+import { ApiError } from "../client";
 
 const FIELD_LABELS = {
   email: "Email",
@@ -36,7 +36,7 @@ function getValidationDetailMessage(detail) {
   return null;
 }
 
-export function getApiErrorMessage(error, fallbackMessage) {
+export function getAuthErrorMessage(error, fallbackMessage) {
   if (!(error instanceof ApiError)) {
     return fallbackMessage;
   }
