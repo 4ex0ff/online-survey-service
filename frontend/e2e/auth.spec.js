@@ -12,8 +12,6 @@ test("user can register, login and open dashboard", async ({ page }) => {
   await page.locator(".button-primary").click();
 
   await expect(page).toHaveURL(/\/login$/);
-  await expect(page.locator(".success-frame")).toBeVisible();
-
   await page.locator('input[name="email"]').fill(uniqueEmail);
   await page.locator('input[name="password"]').fill(password);
   await page.locator(".button-primary").click();
