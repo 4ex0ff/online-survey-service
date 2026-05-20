@@ -5,7 +5,7 @@ on:
   push:
     branches:
       - main
-      - codex/test-environment
+      - test-environment
 
 jobs:
   # Проверяет React-приложение до любого деплоя.
@@ -155,7 +155,7 @@ jobs:
             APP_DIR="$APP_DIR" DEPLOY_BRANCH=main bash scripts/deploy.sh
 
   deploy_test_environment:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/codex/test-environment'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/test-environment'
     runs-on: ubuntu-latest
     needs:
       - frontend_checks
@@ -187,4 +187,4 @@ jobs:
 
             chmod 600 .env
             chmod +x scripts/deploy.sh
-            APP_DIR="$APP_DIR" DEPLOY_BRANCH=codex/test-environment bash scripts/deploy.sh
+            APP_DIR="$APP_DIR" DEPLOY_BRANCH=test-environment bash scripts/deploy.sh
