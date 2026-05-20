@@ -85,7 +85,7 @@ function RegisterPage() {
                 throw new Error(errorMessage);
             }
 
-            const data = await response.json();
+            await response.json();
             navigate('/login', { state: { message: 'Регистрация прошла успешно! Войдите в аккаунт.' } });
         }catch (error) {
             setErrors({ general: error.message || 'Не удалось зарегистрироваться' });

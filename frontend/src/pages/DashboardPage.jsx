@@ -13,7 +13,7 @@ function DashboardPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [surveys, setSurveys] = useState([]);
-    const [filter, setFilter] = useState('all');    // 'all', 'published', 'draft', 'closed'
+    const [filter] = useState('all');    // 'all', 'published', 'draft', 'closed'
     const [searchQuery, setSearchQuery] = useState('');
     const [debouncedQuery, setDebouncedQuery] = useState('');
     
@@ -69,6 +69,8 @@ function DashboardPage() {
     }, [navigate, token, signOut]);
 
     useEffect(() => {
+        // Новая загрузка нужна при смене token/signOut/navigate, eslint rule здесь слишком строгий для async fetch.
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         fetchSurveys();
     }, [fetchSurveys]);
 
@@ -136,12 +138,13 @@ function DashboardPage() {
                 try {
                     const errorData = await response.json();
                     errorMessage = errorData.message || errorData.error || errorMessage;
-                } catch {}
+                } catch {
+                    // Если тело ошибки не JSON, используем статус HTTP.
+                }
                 throw new Error(errorMessage);
             }
 
             setSurveys(prevSurveys => prevSurveys.filter(s => s.id !== surveyId));
-            console.log('Опрос удалён');
         } catch (err) {
             console.error('Delete error:', err);
             alert('Не удалось удалить опрос: ' + err.message);

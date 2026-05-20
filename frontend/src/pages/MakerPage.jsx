@@ -5,7 +5,7 @@ import './MakerPage.scss';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import QuestionCard from '../components/layout/MakerQuestionCard';
-import { IconArrowLeft, IconGripHorizontal, IconX } from '../components/icons';
+import { IconArrowLeft } from '../components/icons';
 
 function MakerPage() {
     {/* --- Функции-помощники --- */}
@@ -73,8 +73,8 @@ function MakerPage() {
     const [questions, setQuestions] = useState([createNewQuestion(1)]);
     const [isEditable, setIsEditable] = useState(true);
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
+    const [, setError] = useState('');
+    const [, setSuccess] = useState('');
     const [validationErrors, setValidationErrors] = useState({});
 
     {/* --- Загрузка данных опроса при монтировании --- */}
@@ -148,6 +148,8 @@ function MakerPage() {
     }, [surveyId, token, navigate, signOut]);
 
     useEffect(() => {
+        // Загружаем данные редактируемого опроса при открытии страницы.
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         fetchSurvey();
     }, [fetchSurvey]);
 
@@ -330,7 +332,7 @@ function MakerPage() {
         } finally {
             setLoading(false);
         }
-    }, [title, description, questions, surveyId, navigate, token, signOut, validateForm]);
+    }, [title, description, closedAt, questions, surveyId, navigate, token, signOut, validateForm]);
 
     return(
         <div className='page maker-page'>

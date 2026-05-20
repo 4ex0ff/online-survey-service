@@ -14,7 +14,6 @@ function loadStoredAuth() {
       user: { userID: 1, name: 'Developer', isAdmin: false }
     });
     localStorage.setItem(AUTH_STORAGE_KEY, raw);
-    console.log('loadStoredAuth: created test token', raw);
   }
   
   if (!raw) {
@@ -31,7 +30,7 @@ function loadStoredAuth() {
 
 export function AuthProvider({ children }) {
   const [authState, setAuthState] = useState(() => loadStoredAuth());
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading] = useState(false);
 
   const signIn = (nextAuth) => {
     setAuthState(nextAuth);
