@@ -7,7 +7,7 @@ import { logoutUser } from '../api/auth';
 import './DashboardPage.scss';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
-import { IconSearch, IconFilter, IconTrash, IconReload, IconX, IconChevronDown } from '../components/icons';
+import { IconSearch, IconFilter, IconTrash, IconReload, IconX } from '../components/icons';
 
 function DashboardPage() {
     {/* --- Состояния компонента --- */}
