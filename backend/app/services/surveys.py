@@ -226,3 +226,54 @@ def submit_public_response(survey_id: int, payload: SurveyResponseCreate) -> Sur
                 raise api_http_exception(400, "Bad Request", "Некорректный вопрос")
 
     return SurveyResponseResult(session_id=session_id, accepted_answers=accepted_answers)
+
+
+def get_survey_analytics(user_id: int, survey_id: int) -> list[dict]:
+    #Доступно только владельцу опроса.
+
+    with get_db_connection() as connection:
+        survey = get_survey_by_id(connection, survey_id)
+        if not survey:
+            raise api_http_exception(404, "Not Found", "Опрос не найден")
+
+        if survey["user_id"] != user_id:
+            raise api_http_exception(403, "Forbidden", "Нет прав для просмотра аналитики этого опроса")
+
+        with connection.cursor() as cur:
+            query = """
+                SELECT 
+                    q.question_id,
+                    q.content AS question_text,
+                    o.option_id,
+                    o.text AS option_text,
+                    COUNT(a.answer_id) AS votes_count
+                FROM questions q
+                LEFT JOIN options o ON q.question_id = o.question_id
+                LEFT JOIN answers a ON o.option_id = a.option_id AND a.survey_id = %s
+                WHERE q.survey_id = %s
+                GROUP BY q.question_id, q.content, o.option_id, o.text
+                ORDER BY q.question_id, o.option_id;
+            """
+            cur.execute(query, (survey_id, survey_id))
+            rows = cur.fetchall()
+
+        analytics = {}
+        for row in rows:
+
+            q_id, q_text, o_id, o_text, count = row
+
+            if q_id not in analytics:
+                analytics[q_id] = {
+                    "questionID": q_id,
+                    "questionText": q_text,
+                    "results": []
+                }
+
+            if o_id is not None:
+                analytics[q_id]["results"].append({
+                    "optionID": o_id,
+                    "optionText": o_text,
+                    "votesCount": count
+                })
+
+        return list(analytics.values())

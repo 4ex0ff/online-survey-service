@@ -64,7 +64,7 @@ uvicorn app.main:app --reload
 Docker:
 
 ```bash
-cp .env.example .env
+cp .env .env
 docker compose up -d --build
 ```
 

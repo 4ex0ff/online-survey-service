@@ -48,6 +48,7 @@ CREATE TABLE answers (
     created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+
 CREATE INDEX idx_surveys_user_id ON surveys(user_id);
 CREATE INDEX idx_questions_survey_id ON questions(survey_id);
 CREATE INDEX idx_options_question_id ON options(question_id);
