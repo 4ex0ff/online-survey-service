@@ -1,6 +1,3 @@
-from __future__ import annotations
-
-
 from fastapi import Depends
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jwt import InvalidTokenError

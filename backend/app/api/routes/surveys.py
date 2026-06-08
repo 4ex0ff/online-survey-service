@@ -69,11 +69,3 @@ def get_public_survey_route(survey_id: int) -> SurveyDetail:
 @router.post("/public/{survey_id}/responses", response_model=SurveyResponseResult, status_code=status.HTTP_201_CREATED)
 def post_public_response(survey_id: int, payload: SurveyResponseCreate) -> SurveyResponseResult:
     return submit_public_response(survey_id, payload)
-
-@router.get("/{survey_id}/analytics")
-def get_survey_analytics_route(
-    survey_id: int,
-    current_user: AuthenticatedUser = Depends(get_current_user),
-):
-    from app.services.surveys import get_survey_analytics
-    return get_survey_analytics(current_user.user_id, survey_id)

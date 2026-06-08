@@ -91,7 +91,7 @@ MVP веб-сервиса для создания и прохождения оп
 ### Вариант 1. Через Docker Compose
 
 ```bash
-cp .env .env
+cp .env.example .env
 docker compose up -d --build
 ```
 
