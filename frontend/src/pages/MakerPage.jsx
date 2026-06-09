@@ -56,7 +56,7 @@ const prepareForAPI = ({ title, description, questions }) => ({
     title,
     description: description || null,
     // Бэкенд принимает список объектов SurveyQuestionInput
-    questions: questions.map((q, idx) => ({
+    questions: questions.map((q) => ({
         content: q.content,
         type: q.type,
         isRequired: q.isRequired,           // alias в схеме бэкенда
@@ -159,7 +159,9 @@ function MakerPage() {
         }
     }, [surveyId, token, navigate, markAsSaved]);
 
-    useEffect(() => { fetchSurvey(); }, [fetchSurvey]);
+    useEffect(() => {
+        void Promise.resolve().then(fetchSurvey);
+    }, [fetchSurvey]);
 
     // ── Валидация ──────────────────────────────
     const validateForm = useCallback(() => {
@@ -284,7 +286,7 @@ function MakerPage() {
                 const link = `${window.location.origin}/survey/${data.surveyID}`;
                 setPublishedLink(link);
                 setSuccess('Опрос опубликован! Ссылка скопирована в буфер.');
-                try { await navigator.clipboard.writeText(link); } catch (_) { /* ignore */ }
+                try { await navigator.clipboard.writeText(link); } catch { /* ignore */ }
             } else {
                 setSuccess('Опрос сохранён');
             }

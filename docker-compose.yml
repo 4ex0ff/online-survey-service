@@ -1,5 +1,5 @@
 services:
-  # PostgreSQL хранит пользователей, опросы, вопросы и ответы при локальном и production Docker-запуске.
+  # PostgreSQL stores users, surveys, questions, options, answers, and migrations.
   postgres:
     image: postgres:16-alpine
     restart: unless-stopped
@@ -19,7 +19,7 @@ services:
       timeout: 5s
       retries: 10
 
-  # Контейнер FastAPI. Он ждёт Postgres, запускает миграции в start.sh и обслуживает /api.
+  # FastAPI waits for PostgreSQL, runs migrations in start.sh, and serves /api.
   backend:
     build:
       context: ./backend
@@ -55,7 +55,7 @@ services:
       timeout: 5s
       retries: 10
 
-  # Собранный React раздаётся через Nginx. Nginx также проксирует /api в backend-контейнер.
+  # Nginx serves the built React SPA and proxies /api to the backend container.
   frontend:
     build:
       context: ./frontend

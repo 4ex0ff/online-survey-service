@@ -73,7 +73,9 @@ function DashboardPage() {
         }
     }, [navigate, token]);
 
-    useEffect(() => { fetchSurveys(); }, [fetchSurveys]);
+    useEffect(() => {
+        void Promise.resolve().then(fetchSurveys);
+    }, [fetchSurveys]);
 
     useEffect(() => {
         const timer = setTimeout(() => setDebouncedQuery(searchQuery), 300);

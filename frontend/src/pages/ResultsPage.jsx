@@ -37,10 +37,12 @@ function ResultsPage() {
         }
     }, [id, token, navigate]);
 
-    useEffect(() => { fetchResults(); }, [fetchResults]);
+    useEffect(() => {
+        void Promise.resolve().then(fetchResults);
+    }, [fetchResults]);
 
     const handleLogout = useCallback(async () => {
-        try { await logoutUser(token); } catch (_) { /* ignore */ }
+        try { await logoutUser(token); } catch { /* ignore */ }
         finally { signOut(); navigate('/login'); }
     }, [token, navigate, signOut]);
 
