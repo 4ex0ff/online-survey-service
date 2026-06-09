@@ -97,7 +97,6 @@ export function validateSurveyForm(formData) {
 }
 
 export function validateSurveyResponse(survey, answers) {
-    const errors = {};
     const errorsId = [];
 
     for (const question of survey.questions) {
@@ -106,24 +105,20 @@ export function validateSurveyResponse(survey, answers) {
         const answer = answers[question.questionID];
         if (question.type === 'text') {
             if (!answer || !answer.trim() === '') {
-                errors[question.questionID] = 'Дайте развернутый ответ';
                 errorsId.push(question.orderPriority + 1);
             }
         } else if (question.type === 'single') {
             if (!answer) {
-                errors[question.questionID] = 'Выберите один вариант ответа';
                 errorsId.push(question.orderPriority + 1);
             }
         } else if (question.type === 'multiple') {
             if (!answer || answer.length === 0) {
-                errors[question.questionID] = 'Выберите хотя бы один вариант ответа';
                 errorsId.push(question.orderPriority + 1);
             }
         }
     }
 
     return {
-        errors,
         errorsId,
         isValid: Object.keys(errors).length === 0
     };

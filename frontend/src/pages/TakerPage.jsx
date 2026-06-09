@@ -107,8 +107,7 @@ function TakerPage() {
 
     // --- Валидация ответов ---
     const validateForm = useCallback(() => {
-        const { errors, errorsId, isValid } = validateSurveyResponse(survey, answers);
-        setValidationErrors(errors);
+        const { errorsId, isValid } = validateSurveyResponse(survey, answers);
         setValidationErrorsId(errorsId);
         return isValid;
     }, [survey, answers]);
@@ -130,7 +129,6 @@ function TakerPage() {
 
     const  handleRadioChange = (questionId, optionId) => {
         setAnswers(prev => ({ ...prev, [questionId]: optionId }));
-        setValidationErrors(prev => ({ ...prev, [questionId]: null }));
         setValidationErrorsId(prev => prev.filter(id => id !== questionId));
     }
 
@@ -142,13 +140,11 @@ function TakerPage() {
                 : currentValues.filter(id => id !== optionId);
             return { ...prev, [questionId]: newValues };
         });
-        setValidationErrors(prev => ({ ...prev, [questionId]: null }));
         setValidationErrorsId(prev => prev.filter(id => id !== questionId));
     }
 
     const handleTextChange = (questionId, value) => {
         setAnswers(prev => ({ ...prev, [questionId]: value }));
-        setValidationErrors(prev => ({ ...prev, [questionId]: null }));
         setValidationErrorsId(prev => prev.filter(id => id !== questionId));
     }
 
