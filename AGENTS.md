@@ -22,6 +22,7 @@
 - Уже применённые миграции не переписываем.
 - Frontend ходит в API через относительный `/api`.
 - Не добавляем CORS-костыли без необходимости: в dev используется Vite proxy, в prod — Nginx proxy.
+- На слабых VPS не собираем frontend через `npm install` внутри Docker на сервере. Для production можно использовать `FRONTEND_RUNTIME_ONLY=true`: сначала собрать `frontend/dist` в CI/локально, затем запускать `docker-compose.runtime.yml`.
 
 ## Структура ответственности
 
@@ -99,6 +100,7 @@ npm run test:e2e
 - Не переписывать README, AGENTS и PLANS полностью без причины; обновлять точечно.
 - При изменении деплоя синхронно обновлять:
   - `docker-compose.yml`
+  - `docker-compose.runtime.yml`
   - `.github/workflows/`
   - `README.md`
   - `scripts/`

@@ -26,5 +26,15 @@ git pull --ff-only origin "$DEPLOY_BRANCH"
 # with "DeadlineExceeded" on simple VPS builds. Keep this overridable.
 export COMPOSE_BAKE="${COMPOSE_BAKE:-false}"
 
-docker compose up -d --build
-docker compose ps
+COMPOSE_ARGS=(-f docker-compose.yml)
+
+if [[ "${FRONTEND_RUNTIME_ONLY:-false}" == "true" ]]; then
+  if [[ ! -f frontend/dist/index.html ]]; then
+    echo "frontend/dist/index.html not found. Build and upload frontend/dist before runtime deploy."
+    exit 1
+  fi
+  COMPOSE_ARGS+=(-f docker-compose.runtime.yml)
+fi
+
+docker compose "${COMPOSE_ARGS[@]}" up -d --build
+docker compose "${COMPOSE_ARGS[@]}" ps
