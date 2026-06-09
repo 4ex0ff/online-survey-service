@@ -187,6 +187,31 @@ jobs:
       - backend_checks
       - e2e_smoke
     steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Build frontend artifact
+        working-directory: frontend
+        run: |
+          npm ci
+          npm run build
+
+      - name: Upload frontend artifact
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT }}
+          source: frontend/dist
+          target: /opt/survey-service-staging
+          overwrite: true
+
       - name: Deploy test environment over SSH
         uses: appleboy/ssh-action@v1.2.0
         with:
@@ -212,4 +237,4 @@ jobs:
 
             chmod 600 .env
             chmod +x scripts/deploy.sh
-            APP_DIR="$APP_DIR" DEPLOY_BRANCH=test-environment bash scripts/deploy.sh
+            APP_DIR="$APP_DIR" DEPLOY_BRANCH=test-environment FRONTEND_RUNTIME_ONLY=true bash scripts/deploy.sh
