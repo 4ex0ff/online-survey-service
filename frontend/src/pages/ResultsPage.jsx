@@ -140,10 +140,10 @@ function ResultsPage() {
                 <div className='frame results-summary'>
                     <h1 className='text-h1'>{results.title}</h1>
                     <div className='summary-stat'>
-                        <span className='stat-number'>{results.responseCount}</span>
                         <span className='text-body stat-label'>
-                            {results.responseCount === 1 ? 'respondent' : 'respondents'}
+                            Респондентов: 
                         </span>
+                        <span className='stat-number'>{results.responseCount}</span>
                     </div>
                     {results.responseCount === 0 && (
                         <p className='text-body no-responses'>Ответов пока нет. Поделитесь ссылкой на опрос!</p>
@@ -160,18 +160,11 @@ function ResultsPage() {
         <div className='page results-page'>
             <Header content='Результаты опроса' onLogout={handleLogout} />
 
-            <div className='controls-group'>
+            <div className='results-container'>
                 <button type='button' className='button-tertiary button-back'
                     onClick={() => navigate(`/maker/${id}`)}>
                     <IconArrowLeft className='icon-primary' />
                 </button>
-                <button type='button' className='button-secondary'
-                    onClick={() => navigator.clipboard.writeText(`${window.location.origin}/survey/${id}`)}>
-                    Скопировать ссылку
-                </button>
-            </div>
-
-            <div className='results-container'>
                 {content}
             </div>
 

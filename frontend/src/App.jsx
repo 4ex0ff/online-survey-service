@@ -6,7 +6,7 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
 import MakerPage from './pages/MakerPage';
-import TakePage from './pages/TakePage';
+import TakerPage from './pages/TakerPage';
 import ResultsPage from './pages/ResultsPage';
 
 function App() {
@@ -19,7 +19,7 @@ function App() {
                     <Route path='/register' element={<RegisterPage />} />
 
                     {/* Прохождение опроса — публично, без авторизации */}
-                    <Route path='/survey/:id' element={<TakePage />} />
+                    <Route path='/survey/:id' element={<TakerPage />} />
 
                     {/* --- Защищённые маршруты --- */}
                     <Route path='/' element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />

@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../providers/useAuth';
 import { getSurvey, createSurvey, updateSurvey, publishSurvey } from '../api/surveys';
@@ -86,6 +86,39 @@ const convertApiQuestionsToState = (apiQuestions) => {
         })),
     }));
 };
+
+/* Textarea с автоматической подгонкой по высоте */
+function AutoResizeTextarea({ value, onChange, placeholder, rows = 1, ...props }) {
+    const textareaRef = useRef(null);
+
+    const resize = () => {
+        const textarea = textareaRef.current;
+        if (textarea) {
+        textarea.style.height = 'auto';
+        textarea.style.height = `${textarea.scrollHeight}px`;
+        }
+    };
+
+    useEffect(() => {
+        resize();
+    }, [value]);
+
+    const handleChange = (e) => {
+        onChange(e);
+        resize();
+    };
+
+    return (
+        <textarea
+        ref={textareaRef}
+        value={value}
+        onChange={handleChange}
+        placeholder={placeholder}
+        rows={rows}
+        {...props}
+        />
+    );
+}
 
 // ─────────────────────────────────────────────
 // Компонент
@@ -329,6 +362,28 @@ function MakerPage() {
     } else {
         content = (
             <div className='content-group'>
+                {/* Ссылка на опубликованный опрос */}
+                {publishedLink && (
+                    <div className='frame published-link-group'>
+                        <p className='text-h3'>
+                            <span>Публичная ссылка: </span>
+                            <a href={publishedLink} target='_blank' rel='noreferrer' className='text-h3 text-link'>
+                                {publishedLink}
+                            </a>
+                        </p>
+                        <div className='link-wrapper'>
+                            <button type='button' className='button-secondary'
+                                onClick={() => navigator.clipboard.writeText(publishedLink)}>
+                                Скопировать
+                            </button>
+                            <button type='button' className='button-secondary'
+                                onClick={() => navigate(`/survey/${surveyId}/results`)}>
+                                Смотреть результаты
+                            </button>
+                        </div>
+                    </div>
+                )}
+
                 {/* Заголовок и описание */}
                 <div className='frame title-group'>
                     <div className='input-group'>
@@ -345,35 +400,19 @@ function MakerPage() {
                         {validationErrors.title && <p className='input-error' role='alert'>{validationErrors.title}</p>}
                     </div>
                     <div className='input-group'>
-                        <textarea
+                        <AutoResizeTextarea
                             className='text-h3 input-field title-description'
-                            rows='1'
                             value={description}
                             onChange={(e) => { setDescription(e.target.value); markAsChanged(); }}
-                            disabled={!isEditable}
                             placeholder='Описание'
+                            rows={1}
+                            id="surveyDescription"
+                            name="surveyDescription"
+                            disabled={!isEditable}
                         />
                         <div className='input-line' />
                     </div>
                 </div>
-
-                {/* Ссылка на опубликованный опрос */}
-                {publishedLink && (
-                    <div className='frame published-link-group'>
-                        <p className='text-body'>Публичная ссылка:</p>
-                        <a href={publishedLink} target='_blank' rel='noreferrer' className='text-body survey-link'>
-                            {publishedLink}
-                        </a>
-                        <button type='button' className='button-secondary'
-                            onClick={() => navigator.clipboard.writeText(publishedLink)}>
-                            Скопировать
-                        </button>
-                        <button type='button' className='button-secondary'
-                            onClick={() => navigate(`/survey/${surveyId}/results`)}>
-                            Смотреть результаты
-                        </button>
-                    </div>
-                )}
 
                 {/* Вопросы */}
                 <div className='questions-group'>

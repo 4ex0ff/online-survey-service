@@ -50,3 +50,6 @@ $height-button: clamp(calc(2.5rem + $spacing-xs), 5vw, calc(3rem + $spacing-xs))
 // --- Иконки ---
 $icon-color: #222222;
 $icon-stroke-width: 1.5;
+$icon-size-primary: clamp(1.5rem, 3vw, 2rem); // 24px → 32px
+$icon-size-secondary: clamp(1.125rem, 2.25vw, 1.5rem); // 18px → 24px
+$icon-size-tertiary: clamp(0.875rem, 1.7vw, 1.125rem); // 14px → 18px
