@@ -120,6 +120,6 @@ export function validateSurveyResponse(survey, answers) {
 
     return {
         errorsId,
-        isValid: Object.keys(errors).length === 0
+        isValid: errorsId.length === 0
     };
 }
