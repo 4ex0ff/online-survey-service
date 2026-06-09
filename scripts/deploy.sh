@@ -22,5 +22,9 @@ git fetch origin "$DEPLOY_BRANCH"
 git checkout "$DEPLOY_BRANCH"
 git pull --ff-only origin "$DEPLOY_BRANCH"
 
+# Docker Compose on some Ubuntu packages enables Bake by default but can fail
+# with "DeadlineExceeded" on simple VPS builds. Keep this overridable.
+export COMPOSE_BAKE="${COMPOSE_BAKE:-false}"
+
 docker compose up -d --build
 docker compose ps
