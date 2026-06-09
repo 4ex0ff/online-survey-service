@@ -54,7 +54,6 @@ function TakerPage() {
     const [currentStep, setCurrentStep] = useState(0)
     const [answers, setAnswers] = useState({});
     const [submitted, setSubmitted] = useState(false);
-    const [validationErrors, setValidationErrors] = useState({});
     const [validationErrorsId, setValidationErrorsId] = useState([]);
 
     // --- Вспомогательные функции ---
@@ -128,11 +127,6 @@ function TakerPage() {
             setSubmitError(null);
         }
     };
-
-    const goToQuestion = (questionId) => {
-        setCurrentStep(questionId);
-        setSubmitError(null);
-    }
 
     const  handleRadioChange = (questionId, optionId) => {
         setAnswers(prev => ({ ...prev, [questionId]: optionId }));
