@@ -2,12 +2,14 @@ from datetime import datetime
 from typing import Literal
 from uuid import UUID
 
-from pydantic import Field, field_validator, model_validator
+from pydantic import Field, field_validator
 
 from app.schemas.base import AppModel
 
 QuestionType = Literal["single", "multiple", "text"]
 
+
+# ── Ответные схемы (то, что бэкенд отдаёт фронту) ──────────────────────────
 
 class SurveySummary(AppModel):
     survey_id: int = Field(serialization_alias="surveyID")
@@ -38,6 +40,34 @@ class SurveyDetail(SurveySummary):
     questions: list[SurveyQuestion] = []
 
 
+# ── Схемы результатов ────────────────────────────────────────────────────────
+
+class OptionResult(AppModel):
+    option_id: int = Field(serialization_alias="optionID")
+    text: str
+    vote_count: int = Field(serialization_alias="voteCount")
+
+
+class QuestionResult(AppModel):
+    question_id: int = Field(serialization_alias="questionID")
+    content: str
+    type: QuestionType
+    order_priority: int = Field(serialization_alias="orderPriority")
+    # для single/multiple — варианты с голосами
+    options: list[OptionResult] = []
+    # для text — список ответов
+    text_answers: list[str] = Field(default_factory=list, serialization_alias="textAnswers")
+
+
+class SurveyResultsDetail(AppModel):
+    survey_id: int = Field(serialization_alias="surveyID")
+    title: str
+    response_count: int = Field(serialization_alias="responseCount")
+    questions: list[QuestionResult] = []
+
+
+# ── Входящие схемы (то, что фронт присылает) ────────────────────────────────
+
 class SurveyOptionInput(AppModel):
     text: str = Field(min_length=1, max_length=500)
 
@@ -47,14 +77,6 @@ class SurveyQuestionInput(AppModel):
     type: QuestionType
     is_required: bool = Field(default=True, alias="isRequired")
     options: list[SurveyOptionInput] = Field(default_factory=list)
-
-    @model_validator(mode="after")
-    def validate_options_for_type(self):
-        if self.type in {"single", "multiple"} and len(self.options) < 2:
-            raise ValueError("Choice questions require at least two options")
-        if self.type == "text" and self.options:
-            raise ValueError("Text questions cannot have options")
-        return self
 
 
 class SurveyCreate(AppModel):

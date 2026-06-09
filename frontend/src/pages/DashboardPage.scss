@@ -65,17 +65,13 @@
         @include mobile {
             padding-left: 100px;
         }
-
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-
         appearance: none;
         -webkit-appearance: none;
         -moz-appearance: none;
-        &::-ms-expand {
-            display: none;
-        }
+        &::-ms-expand { display: none; }
     }
 
     .filter-select-icon {
@@ -90,7 +86,7 @@
             left: 50%;
         }
     }
-    
+
     /* --- Опросы --- */
     .surveys-group {
         width: 75%;
@@ -98,12 +94,9 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        @include mobile {
-            width: 90%;
-        }
+        @include mobile { width: 90%; }
     }
-    
-    /* Ошибка */
+
     .surveys-error {
         display: flex;
         flex-direction: column;
@@ -113,13 +106,12 @@
         width: fit-content;
         height: fit-content;
     }
-    
+
     .button-retry {
         font-size: $font-size-h3;
         gap: $spacing-xs;
     }
-    
-    /* Пустой список опросов */
+
     .surveys-empty {
         display: flex;
         align-items: center;
@@ -127,12 +119,9 @@
         padding: $spacing-sm $spacing-lg;
         width: fit-content;
         height: fit-content;
-        @include mobile {
-            word-break: break-word;
-        }
+        @include mobile { word-break: break-word; }
     }
-    
-    /* Сетка опросов */
+
     .surveys-grid {
         display: grid;
         grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -149,7 +138,7 @@
             gap: $spacing-xl;
         }
     }
-    
+
     .survey-card {
         display: flex;
         flex-direction: column;
@@ -159,7 +148,7 @@
         box-sizing: border-box;
         overflow: hidden;
     }
-    
+
     .survey-header {
         display: flex;
         flex-direction: row;
@@ -168,22 +157,74 @@
         gap: $spacing-xs;
         width: 100%;
     }
-    
+
     .survey-title {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
         cursor: pointer;
+        &:hover { opacity: 0.75; }
     }
-    
-    /*
-    .survey-info {
+
+    /* Кнопки действий на карточке */
+    .survey-actions {
         display: flex;
         flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
         gap: $spacing-xs;
         width: 100%;
+        flex-wrap: wrap;
     }
-    */
+
+    .button-small {
+        font-size: 0.75rem;
+        padding: $spacing-xs $spacing-sm;
+        border-radius: $radius-full;
+        white-space: nowrap;
+        flex: 1;
+        text-align: center;
+    }
+}
+
+/* --- Toast уведомления --- */
+.toast-container {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    z-index: 9999;
+    pointer-events: none;
+}
+
+.toast {
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.75rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    animation: toast-in 0.25s ease, toast-out 0.25s ease 2.75s forwards;
+    max-width: 320px;
+
+    &--success {
+        background: #ecfdf5;
+        color: #065f46;
+        border: 1px solid #6ee7b7;
+    }
+
+    &--error {
+        background: #fef2f2;
+        color: #991b1b;
+        border: 1px solid #fca5a5;
+    }
+}
+
+@keyframes toast-in {
+    from { opacity: 0; transform: translateY(1rem); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes toast-out {
+    from { opacity: 1; transform: translateY(0); }
+    to   { opacity: 0; transform: translateY(1rem); }
 }

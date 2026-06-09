@@ -48,16 +48,17 @@ export async function request(path, options = {}) {
   }
 
   if (!response.ok) {
-    // Если 401, вызываем глобальный обработчик перед выбросом ошибки
     if (response.status === 401 && unauthorizedHandler) {
       unauthorizedHandler();
     }
-    
-    throw new ApiError(
-      payload?.message || "Request failed",
-      response.status,
-      payload,
-    );
+
+    // FastAPI возвращает { "detail": "..." } — читаем оба поля
+    const message =
+      payload?.detail ||
+      payload?.message ||
+      "Request failed";
+
+    throw new ApiError(message, response.status, payload);
   }
 
   return payload;

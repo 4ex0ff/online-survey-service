@@ -1,9 +1,7 @@
 import { request } from "./client";
 
 export function getSurveys(token) {
-  return request("/api/surveys", {
-    token,
-  });
+  return request("/api/surveys", { token });
 }
 
 export function createSurvey(token, payload) {
@@ -15,9 +13,7 @@ export function createSurvey(token, payload) {
 }
 
 export function getSurvey(token, surveyID) {
-  return request(`/api/surveys/${surveyID}`, {
-    token,
-  });
+  return request(`/api/surveys/${surveyID}`, { token });
 }
 
 export function updateSurvey(token, surveyID, payload) {
@@ -51,4 +47,8 @@ export function submitSurveyResponse(surveyID, payload) {
     method: "POST",
     body: payload,
   });
+}
+
+export function getSurveyResults(token, surveyID) {
+  return request(`/api/surveys/${surveyID}/results`, { token });
 }

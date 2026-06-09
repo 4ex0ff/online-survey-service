@@ -1,10 +1,8 @@
 from pydantic import EmailStr, Field, field_validator
-
 from app.schemas.base import AppModel
 
-
 class RegisterRequest(AppModel):
-    # Входной контракт для POST /api/auth/register.
+    # Контракт для POST /api/auth/register
     name: str = Field(min_length=2, max_length=100)
     email: EmailStr
     password: str = Field(min_length=8, max_length=128)
@@ -14,8 +12,8 @@ class RegisterRequest(AppModel):
     def normalize_email(cls, value: EmailStr) -> str:
         return value.lower()
 
-
 class LoginRequest(AppModel):
+    # Контракт для POST /api/auth/login
     email: EmailStr
     password: str = Field(min_length=8, max_length=128)
 
@@ -24,26 +22,22 @@ class LoginRequest(AppModel):
     def normalize_email(cls, value: EmailStr) -> str:
         return value.lower()
 
-
 class UserPublic(AppModel):
-    # Во внешнем JSON используем userID/isAdmin, а Python-код остаётся в snake_case.
+    # Публичные данные (Python работает в snake_case, во внешний JSON уходит camelCase)
     user_id: int = Field(serialization_alias="userID")
     name: str
     is_admin: bool = Field(serialization_alias="isAdmin")
-
-
-class AuthenticatedUser(AppModel):
-    user_id: int
-    name: str
-    email: EmailStr
-    is_admin: bool
-
 
 class RegisterResponse(AppModel):
     user_id: int = Field(serialization_alias="userID")
     message: str
 
-
 class LoginResponse(AppModel):
     token: str
     user: UserPublic
+
+class AuthenticatedUser(AppModel):
+    user_id: int = Field(serialization_alias="userID")
+    name: str
+    email: str
+    is_admin: bool = Field(serialization_alias="isAdmin")

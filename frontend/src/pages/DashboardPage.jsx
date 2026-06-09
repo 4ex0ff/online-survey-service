@@ -9,27 +9,50 @@ import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import { IconSearch, IconFilter, IconTrash, IconReload, IconX } from '../components/icons';
 
+// ── Toast ────────────────────────────────────────────────────────────────────
+function Toast({ toasts }) {
+    return (
+        <div className='toast-container'>
+            {toasts.map(t => (
+                <div key={t.id} className={`toast toast--${t.type}`}>
+                    {t.message}
+                </div>
+            ))}
+        </div>
+    );
+}
+
+function useToast() {
+    const [toasts, setToasts] = useState([]);
+
+    const show = useCallback((message, type = 'success') => {
+        const id = Date.now();
+        setToasts(prev => [...prev, { id, message, type }]);
+        setTimeout(() => {
+            setToasts(prev => prev.filter(t => t.id !== id));
+        }, 3000);
+    }, []);
+
+    return { toasts, show };
+}
+
+// ── Компонент ────────────────────────────────────────────────────────────────
 function DashboardPage() {
-    {/* --- Состояния компонента --- */}
     const navigate = useNavigate();
     const { token, signOut } = useAuth();
+    const { toasts, show: showToast } = useToast();
+
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [surveys, setSurveys] = useState([]);
-    const [filter, setFilter] = useState('all');    // 'all', 'published', 'draft', 'closed'
+    const [filter, setFilter] = useState('all');
     const [searchQuery, setSearchQuery] = useState('');
     const [debouncedQuery, setDebouncedQuery] = useState('');
-    
-    {/* --- Загрузка опросов --- */}
-    const fetchSurveys = useCallback(async () => {
-        if (!token) {
-            navigate('/login');
-            return;
-        }
 
+    const fetchSurveys = useCallback(async () => {
+        if (!token) { navigate('/login'); return; }
         setLoading(true);
         setError('');
-
         try {
             const data = await getSurveys(token);
             const formatted = data.map(survey => ({
@@ -50,25 +73,16 @@ function DashboardPage() {
         }
     }, [navigate, token]);
 
-    useEffect(() => {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        fetchSurveys();
-    }, [fetchSurveys]);
+    useEffect(() => { fetchSurveys(); }, [fetchSurveys]);
 
-    {/* --- Фильтрация и поиск --- */}
-    // Дебаунс для оптимизации поиска
     useEffect(() => {
-        const timer = setTimeout(() => {
-            setDebouncedQuery(searchQuery);
-        }, 300);
+        const timer = setTimeout(() => setDebouncedQuery(searchQuery), 300);
         return () => clearTimeout(timer);
     }, [searchQuery]);
 
     const filteredSurveys = useMemo(() => {
         let result = surveys;
-        if (filter !== 'all') {
-            result = result.filter(s => s.status === filter);
-        }
+        if (filter !== 'all') result = result.filter(s => s.status === filter);
         if (debouncedQuery.trim()) {
             const q = debouncedQuery.toLowerCase();
             result = result.filter(s => s.title.toLowerCase().includes(q));
@@ -76,40 +90,31 @@ function DashboardPage() {
         return result;
     }, [surveys, filter, debouncedQuery]);
 
-    {/* --- Обработчики действий пользователя --- */}
     const handleLogout = useCallback(async () => {
-        try {
-            await logoutUser(token);
-        } catch (err) {
-            console.error('Logout error:', err);
-        } finally {
-            signOut();
-            navigate('/login');
-        }
+        try { await logoutUser(token); } catch (err) { console.error(err); }
+        finally { signOut(); navigate('/login'); }
     }, [token, navigate, signOut]);
 
-    const handleCreateSurvey = () => {
-        navigate('/maker');
-    };
-
     const handleDeleteSurvey = useCallback(async (surveyId, surveyTitle) => {
-        if (!window.confirm(`Удалить опрос "${surveyTitle}"? Это действие нельзя отменить.`)) {
-            return;
-        }
-
+        if (!window.confirm(`Удалить опрос "${surveyTitle}"? Это действие нельзя отменить.`)) return;
         try {
             await deleteSurvey(token, surveyId);
-            setSurveys(prevSurveys => prevSurveys.filter(s => s.id !== surveyId));
-            console.log('Опрос удалён');
+            setSurveys(prev => prev.filter(s => s.id !== surveyId));
+            showToast('Опрос удалён', 'success');
         } catch (err) {
             console.error('Delete error:', err);
-            alert(getSurveyErrorMessage(err, 'Не удалось удалить опрос'));
+            showToast(getSurveyErrorMessage(err, 'Не удалось удалить опрос'), 'error');
         }
-    }, [token]);
+    }, [token, showToast]);
 
-    const handleRetry = () => fetchSurveys();
+    const handleCopyLink = useCallback((surveyId) => {
+        const link = `${window.location.origin}/survey/${surveyId}`;
+        navigator.clipboard.writeText(link)
+            .then(() => showToast('Ссылка скопирована!', 'success'))
+            .catch(() => showToast('Не удалось скопировать ссылку', 'error'));
+    }, [showToast]);
 
-    {/* --- Состояния сетки опросов --- */}
+    // ── Контент ──────────────────────────────────────────────────────────────
     let content;
     if (loading) {
         content = (
@@ -122,7 +127,7 @@ function DashboardPage() {
         content = (
             <div className='frame surveys-error'>
                 <p className='text-h2'>{error}</p>
-                <button type='button' className='button-primary button-retry' onClick={handleRetry}>
+                <button type='button' className='button-primary button-retry' onClick={fetchSurveys}>
                     <IconReload className='icon-primary' color='#FFFFFF' />
                     <span>Повторить</span>
                 </button>
@@ -145,32 +150,53 @@ function DashboardPage() {
                             <h2 className='text-h2 survey-title' onClick={() => navigate(`/maker/${survey.id}`)}>
                                 {survey.title}
                             </h2>
-                            <button type='button' className='button-icon' onClick={() => handleDeleteSurvey(survey.id, survey.title)}>
+                            <button type='button' className='button-icon'
+                                onClick={() => handleDeleteSurvey(survey.id, survey.title)}>
                                 <IconTrash className='icon-secondary' />
                             </button>
                         </div>
+
                         <span className={`text-small survey-status--${survey.status}`}>
                             {survey.status === 'published' ? 'Опубликован'
                                 : survey.status === 'draft' ? 'Черновик'
                                 : 'Закрыт'}
                         </span>
+
                         <p className='text-small'>{survey.createdAt}</p>
+
+                        {/* Кнопки для опубликованных опросов */}
+                        {survey.status === 'published' && (
+                            <div className='survey-actions'>
+                                <button
+                                    type='button'
+                                    className='button-secondary button-small'
+                                    onClick={() => handleCopyLink(survey.id)}
+                                >
+                                    Скопировать ссылку
+                                </button>
+                                <button
+                                    type='button'
+                                    className='button-secondary button-small'
+                                    onClick={() => navigate(`/survey/${survey.id}/results`)}
+                                >
+                                    Результаты
+                                </button>
+                            </div>
+                        )}
                     </div>
                 ))}
             </div>
-        )
+        );
     }
 
-    {/* --- Разметка страницы --- */}
-    return(
+    return (
         <div className='page dashboard-page'>
-            {/* --- Header --- */}
             <Header onLogout={handleLogout} />
 
-            {/* --- Управление --- */}
             <div className='controls-group'>
-                <button type='button' className='button-primary button-create' onClick={handleCreateSurvey}>
-                    <IconX className='icon-primary ' color='white' />
+                <button type='button' className='button-primary button-create'
+                    onClick={() => navigate('/maker')}>
+                    <IconX className='icon-primary' color='white' />
                 </button>
                 <div className='frame search-wrapper'>
                     <IconSearch className='icon-primary' />
@@ -184,7 +210,8 @@ function DashboardPage() {
                 </div>
                 <div className='button-tertiary filter-select-wrapper'>
                     <IconFilter className='icon-primary filter-select-icon' />
-                    <select className='text-body input-field filter-select' id='filter' name='filter' value={filter} onChange={(e) => setFilter(e.target.value)}>
+                    <select className='text-body input-field filter-select'
+                        value={filter} onChange={(e) => setFilter(e.target.value)}>
                         <option value='all'> | Все опросы</option>
                         <option value='published'> | Опубликован</option>
                         <option value='draft'> | Черновик</option>
@@ -193,12 +220,11 @@ function DashboardPage() {
                 </div>
             </div>
 
-            {/* --- Список опросов --- */}
-            <div className={'surveys-group'}>
+            <div className='surveys-group'>
                 {content}
             </div>
 
-            {/* --- Footer --- */}
+            <Toast toasts={toasts} />
             <Footer />
         </div>
     );
